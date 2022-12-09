@@ -58,7 +58,9 @@ namespace DragonLisp {
 %token END 0 "EOF"
 %token <int64_t> NUMBER "number"
 
-%type <DragonLisp::Token> operator
+%type <DragonLisp::Token> basic_operator
+%type <DragonLisp::Token> arithmetic_operator
+%type <DragonLisp::Token> comparsion_operator
 
 %define parse.error verbose
 
@@ -72,18 +74,36 @@ R
     | R S-Expr
 
 S-Expr
-    : LPAREN operator NUMBER NUMBER RPAREN {
+    : LPAREN basic_operator NUMBER NUMBER RPAREN {
         std::printf("Operator -> %d, LHS -> %lld, RHS -> %lld\n", int($2), $3, $4);
         std::printf("This is S-Expr!\n");
     }
 ;
 
-operator
+basic_operator
+    : arithmetic_operator   { $$ = $1; }
+    | boolean_operator      { $$ = $1; }
+    | comparsion_operator   { $$ = $1; }
+;
+
+arithmetic_operator
     : PLUS  { $$ = Token::PLUS; std::printf("I am plus +\n"); }
     | MINUS { $$ = Token::MINUS; std::printf("I am minus -\n"); }
     | STAR  { $$ = Token::MULTIPLY; std::printf("I am star *\n"); }
     | SLASH { $$ = Token::DIVIDE; std::printf("I am slash /\n"); }
 ;
+
+boolean_operator
+    :
+;
+
+comparsion_operator
+    : LE    { $$ = Token::LE; }
+    | LT    { $$ = Token::LT; }
+    | GE    { $$ = Token::GE; }
+    | GT    { $$ = Token::GT; }
+    | EQUAL { $$ = Token::EQUAL; }
+    | NE    { $$ = Token::NE; }
 
 %%
 
