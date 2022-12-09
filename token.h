@@ -4,10 +4,16 @@
 namespace DragonLisp {
 
 enum Token {
+	LE,
+	GE,
+	EQUAL,
+	NE,
+	LT,
+	GT,
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE
+    DIVIDE,
 };
 
 }

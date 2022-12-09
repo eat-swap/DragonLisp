@@ -33,6 +33,12 @@ blank	[ \t\v\r]
 {blank}+	{ loc->step(); }
 \n+			{ loc->lines(yyleng); loc->step(); }
 
+"<="    { return token::TOKEN_LE; }
+">="    { return token::TOKEN_GE; }
+"<"		{ return token::TOKEN_LT; }
+">"		{ return token::TOKEN_GT; }
+"="		{ return token::TOKEN_EQUAL; }
+"/="	{ return token::TOKEN_NE; }
 "("		{ return token::TOKEN_LPAREN; }
 ")"		{ return token::TOKEN_RPAREN; }
 "+"		{ return token::TOKEN_PLUS; }

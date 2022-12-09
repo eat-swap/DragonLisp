@@ -41,6 +41,12 @@ namespace DragonLisp {
 %define parse.assert
 
 %token
+    LE	    "<="
+    GE	    ">="
+    EQUAL   "="
+    NE	    "/="
+    LT	    "<"
+    GT	    ">"
     LPAREN  "("
     RPAREN  ")"
     PLUS    "+"
