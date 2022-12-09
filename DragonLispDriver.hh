@@ -20,6 +20,13 @@ public:
 	void error(const DLParser::location_type& l, const std::string& m);
 	void error(const std::string& m);
 
+	enum Operator {
+		PLUS,
+		MINUS,
+		MULTIPLY,
+		DIVIDE
+	};
+
 private:
 	DLParser* parser = nullptr;
 	DLScanner* scanner = nullptr;

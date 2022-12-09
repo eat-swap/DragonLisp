@@ -7,6 +7,10 @@
 
 %code requires {
 
+#include <typeinfo>
+
+#include "token.h"
+
 namespace DragonLisp {
     class DLDriver;
     class DLScanner;
@@ -48,6 +52,8 @@ namespace DragonLisp {
 %token END 0 "EOF"
 %token <int64_t> NUMBER "number"
 
+%type <DragonLisp::Token> operator
+
 %define parse.error verbose
 
 %%
@@ -60,13 +66,18 @@ R
     | R S-Expr
 
 S-Expr
-    : LPAREN operator NUMBER NUMBER RPAREN { std::printf("This is S-Expr!\n"); }
+    : LPAREN operator NUMBER NUMBER RPAREN {
+        std::printf("Operator -> %d, LHS -> %lld, RHS -> %lld\n", int($2), $3, $4);
+        std::printf("This is S-Expr!\n");
+    }
+;
 
 operator
-    : PLUS  { std::printf("I am plus +\n"); }
-    | MINUS { std::printf("I am minus -\n"); }
-    | STAR  { std::printf("I am star *\n"); }
-    | SLASH { std::printf("I am slash /\n"); }
+    : PLUS  { $$ = Token::PLUS; std::printf("I am plus +\n"); }
+    | MINUS { $$ = Token::MINUS; std::printf("I am minus -\n"); }
+    | STAR  { $$ = Token::MULTIPLY; std::printf("I am star *\n"); }
+    | SLASH { $$ = Token::DIVIDE; std::printf("I am slash /\n"); }
+;
 
 %%
 
