@@ -30,21 +30,76 @@ blank	[ \t\v\r]
 	yylval = lval;
 %}
 
-{blank}+	{ loc->step(); }
-\n+			{ loc->lines(yyleng); loc->step(); }
+{blank}+	{
+	loc->step();
+	std::printf("Skipping blank\n");
+};
 
-"<="    { return token::TOKEN_LE; }
-">="    { return token::TOKEN_GE; }
-"<"		{ return token::TOKEN_LT; }
-">"		{ return token::TOKEN_GT; }
-"="		{ return token::TOKEN_EQUAL; }
-"/="	{ return token::TOKEN_NE; }
-"("		{ return token::TOKEN_LPAREN; }
-")"		{ return token::TOKEN_RPAREN; }
-"+"		{ return token::TOKEN_PLUS; }
-"-"		{ return token::TOKEN_MINUS; }
-"*"		{ return token::TOKEN_STAR; }
-"/"		{ return token::TOKEN_SLASH; }
+\n+			{
+	loc->lines(yyleng);
+	loc->step();
+	std::printf("Skipping newline\n");
+}
+
+"<="    {
+	std::printf("Scanned <=\n");
+	return token::TOKEN_LE;
+};
+
+">="    {
+	std::printf("Scanned >=\n");
+	return token::TOKEN_GE;
+};
+
+"<"		{
+	std::printf("Scanned <\n");
+	return token::TOKEN_LT;
+};
+
+">"		{
+	std::printf("Scanned >\n");
+	return token::TOKEN_GT;
+};
+
+"="		{
+	std::printf("Scanned =\n");
+	return token::TOKEN_EQUAL;
+};
+
+"/="	{
+	std::printf("Scanned !=\n");
+	return token::TOKEN_NE;
+};
+
+"("		{
+	std::printf("Scanned (\n");
+	return token::TOKEN_LPAREN;
+};
+
+")"		{
+	std::printf("Scanned )\n");
+	return token::TOKEN_RPAREN;
+};
+
+"+"		{
+	std::printf("Scanned +\n");
+	return token::TOKEN_PLUS;
+};
+
+"-"		{
+	std::printf("Scanned -\n");
+	return token::TOKEN_MINUS;
+};
+
+"*"		{
+	std::printf("Scanned *\n");
+	return token::TOKEN_STAR;
+};
+
+"/"		{
+	std::printf("Scanned /\n");
+	return token::TOKEN_SLASH;
+};
 
 {int}	{
 	errno = 0;
@@ -52,6 +107,7 @@ blank	[ \t\v\r]
 	if (errno)
 		throw DragonLisp::DLParser::syntax_error(*loc, "Invalid integer provided: " + std::string(yytext));
 	yylval->emplace<int64_t>(n);
+	std::printf("Scanned integer: %lld\n", n);
 	return token::TOKEN_NUMBER;
 };
 
