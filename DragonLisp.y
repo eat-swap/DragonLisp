@@ -41,78 +41,36 @@ namespace DragonLisp {
 %define parse.assert
 
 %token
-    LE	    "<="
-    GE	    ">="
-    EQUAL   "="
-    NE	    "/="
-    LT	    "<"
-    GT	    ">"
-    LPAREN  "("
-    RPAREN  ")"
-    PLUS    "+"
-    MINUS   "-"
-    STAR    "*"
-    SLASH   "/"
+    LESS_EQUAL		"<="
+    GREATER_EQUAL	">="
+    LESS		"<"
+    GREATER		">"
+    NOT_EQUAL		"/="
+    EQUAL		"="
+    LPAREN		"("
+    RPAREN		")"
+    PLUS		"+"
+    MINUS		"-"
+    MULTIPLY		"*"
+    DIVIDE		"/"
+    SPACE
 ;
 
-%token END 0 "EOF"
-%token <int64_t> NUMBER "number"
-%token <std::string> STRING "string"
-
-%type <DragonLisp::Token> basic_operator
-%type <DragonLisp::Token> arithmetic_operator
-%type <DragonLisp::Token> comparsion_operator
+%token END              0 "EOF"
+%token <double>		FLOAT		"float"
+%token <int64_t>        INTEGER		"integer"
+%token <std::string>    STRING		"string"
+%token <std::string>    IDENTIFIER	"identifier"
 
 %define parse.error verbose
 
 %%
 
 S
-    : R END
-
-R
-    :
-    | R S-Expr
-    | STRING { std::cout << "Scanned string -> " << $1 << std::endl; }
-
-S-Expr
-    : LPAREN basic_operator NUMBER NUMBER RPAREN {
-        std::printf("Operator -> %d, LHS -> %lld, RHS -> %lld\n", int($2), $3, $4);
-        std::printf("This is S-Expr!\n");
-    }
-;
-
-basic_operator
-    : arithmetic_operator   { $$ = $1; }
-    | comparsion_operator   { $$ = $1; }
-;
-
-arithmetic_operator
-    : PLUS  { $$ = Token::PLUS; std::printf("I am plus +\n"); }
-    | MINUS { $$ = Token::MINUS; std::printf("I am minus -\n"); }
-    | STAR  { $$ = Token::MULTIPLY; std::printf("I am star *\n"); }
-    | SLASH { $$ = Token::DIVIDE; std::printf("I am slash /\n"); }
-;
-
-comparsion_operator
-    : LE    { $$ = Token::LE; }
-    | LT    { $$ = Token::LT; }
-    | GE    { $$ = Token::GE; }
-    | GT    { $$ = Token::GT; }
-    | EQUAL { $$ = Token::EQUAL; }
-    | NE    { $$ = Token::NE; }
+    : END
 
 %%
 
 void DragonLisp::DLParser::error(const location_type& l, const std::string& msg) {
     std::cerr << "Error: " << msg << " at " << l << "\n";
-}
-
-DragonLisp::DLParser::symbol_type make_NUMBER(const std::string& s, const DragonLisp::DLParser::location_type& loc) {
-    try {
-        int n = std::stoi(s);
-        return DragonLisp::DLParser::make_NUMBER(n, loc);
-    } catch (...) {
-        throw DragonLisp::DLParser::syntax_error(loc, "Invalid integer provided: " + s);
-    }
 }
