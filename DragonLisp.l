@@ -48,6 +48,12 @@ print	(print|PRINT)
 loop	(loop|LOOP)
 setq	(setq|SETQ)
 quote	(quote|QUOTE)
+for		(for|FOR)
+in		(in|IN)
+from	(from|FROM)
+to		(to|TO)
+dotimes	(dotimes|DOTIMES)
+dolist	(dolist|DOLIST)
 defconstant	(defconstant|DEFCONSTANT)
 
 %%

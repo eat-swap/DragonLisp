@@ -75,6 +75,12 @@ namespace DragonLisp {
     LOOP		"loop"
     SETQ		"setq"
     QUOTE		"quote"
+    FOR			"for"
+    IN			"in"
+    FROM		"from"
+    TO			"to"
+    DOTIMES		"dotimes"
+    DOLIST		"dolist"
     DEFCONSTANT		"defconstant"
 ;
 

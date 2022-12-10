@@ -41,6 +41,12 @@ enum Token {
 	LOOP,
 	SETQ,
 	QUOTE,
+	FOR,
+	IN,
+	FROM,
+	TO,
+	DOTIMES,
+	DOLIST,
 	DEFCONSTANT,
 };
 
