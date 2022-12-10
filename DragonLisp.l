@@ -24,7 +24,7 @@ float	[+-]?[0-9]*[.][0-9]+([eE][+-][0-9]+)?
 int		[+-]?(0[xX][0-9A-Fa-f]*|0[0-7]+|[1-9][0-9]*)
 id		[a-zA-Z_][a-zA-Z_0-9]*
 blank	[ \t\v\r]
-comment	;[^\n]*
+comment	;[^\n\r]*
 string	\"[^\r\n]*\"
 
 and		(and|AND)
