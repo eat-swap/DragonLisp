@@ -27,6 +27,29 @@ blank	[ \t\v\r]
 comment	;.*$
 string	\"[^\r\n]*\"
 
+and		(and|AND)
+or		(or|OR)
+not		(not|NOT)
+max		(max|MAX)
+min		(min|MIN)
+if		(if|IF)
+logand	(logand|LOGAND)
+logior	(logior|LOGIOR)
+logxor	(logxor|LOGXOR)
+lognor	(lognor|LOGNOR)
+logeqv	(logeqv|LOGEQV)
+mod		(mod|MOD)
+rem		(rem|REM)
+incf	(incf|INCF)
+decf	(decf|DECF)
+defvar	(defvar|DEFVAR)
+defun	(defun|DEFUN)
+print	(print|PRINT)
+loop	(loop|LOOP)
+setq	(setq|SETQ)
+quote	(quote|QUOTE)
+defconstant	(defconstant|DEFCONSTANT)
+
 %%
 
 %{
@@ -61,14 +84,14 @@ string	\"[^\r\n]*\"
 {float}	{
 	errno = 0;
 	char* seq_end_ptr = nullptr;
-	double n = strtod(yytext, &seq_end_str);
+	double n = strtod(yytext, &seq_end_ptr);
 	if (errno == ERANGE)
 		throw DragonLisp::DLParser::syntax_error(*loc, "Float out of range: " + std::string(yytext));
 	if (seq_end_ptr - yytext < yyleng)
 		throw DragonLisp::DLParser::syntax_error(*loc, "Invalid float scanned: [" + std::string(yytext, seq_end_ptr) + "], but provided [" + std::string(yytext) + "]");
 	yylval->emplace<double>(n);
 	std::printf("Scanned float: %lf\n", n);
-	return TOKEN::TOKEN_FLOAT;
+	return token::TOKEN_FLOAT;
 }
 
 {int}	{
@@ -142,6 +165,111 @@ string	\"[^\r\n]*\"
 "/"		{
 	std::printf("Scanned /\n");
 	return token::TOKEN_DIVIDE;
+};
+
+{and}	{
+	std::printf("Scanned and\n");
+	return token::TOKEN_AND;
+};
+
+{or}	{
+	std::printf("Scanned or\n");
+	return token::TOKEN_OR;
+};
+
+{not}	{
+	std::printf("Scanned not\n");
+	return token::TOKEN_NOT;
+};
+
+{max}	{
+	std::printf("Scanned max\n");
+	return token::TOKEN_MAX;
+};
+
+{min}	{
+	std::printf("Scanned min\n");
+	return token::TOKEN_MIN;
+};
+
+{if}	{
+	std::printf("Scanned if\n");
+	return token::TOKEN_IF;
+};
+
+{logand}	{
+	std::printf("Scanned logand\n");
+	return token::TOKEN_LOGAND;
+};
+
+{logior}	{
+	std::printf("Scanned logior\n");
+	return token::TOKEN_LOGIOR;
+};
+
+{logxor}	{
+	std::printf("Scanned logxor\n");
+	return token::TOKEN_LOGXOR;
+};
+
+{lognor}	{
+	std::printf("Scanned lognor\n");
+	return token::TOKEN_LOGNOR;
+};
+
+{logeqv}	{
+	std::printf("Scanned logeqv\n");
+	return token::TOKEN_LOGEQV;
+};
+
+{mod}	{
+	std::printf("Scanned mod\n");
+	return token::TOKEN_MOD;
+};
+
+{rem}	{
+	std::printf("Scanned rem\n");
+	return token::TOKEN_REM;
+};
+
+{incf}	{
+	std::printf("Scanned incf\n");
+	return token::TOKEN_INCF;
+};
+
+{decf}	{
+	std::printf("Scanned decf\n");
+	return token::TOKEN_DECF;
+};
+
+{defvar}	{
+	std::printf("Scanned defvar\n");
+	return token::TOKEN_DEFVAR;
+};
+
+{defun}	{
+	std::printf("Scanned defun\n");
+	return token::TOKEN_DEFUN;
+};
+
+{print}	{
+	std::printf("Scanned print\n");
+	return token::TOKEN_PRINT;
+};
+
+{loop}	{
+	std::printf("Scanned loop\n");
+	return token::TOKEN_LOOP;
+};
+
+{setq}	{
+	std::printf("Scanned setq\n");
+	return token::TOKEN_SETQ;
+};
+
+{quote}	{
+	std::printf("Scanned quote\n");
+	return token::TOKEN_QUOTE;
 };
 
 {id}	{
