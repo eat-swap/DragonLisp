@@ -23,6 +23,8 @@ using token = DragonLisp::DLParser::token;
 id		[a-zA-Z_][a-zA-Z_0-9]*
 int		[0-9]+
 blank	[ \t\v\r]
+comment	;.*$
+string	\"[^\r\n]*\"
 
 %%
 
@@ -30,23 +32,35 @@ blank	[ \t\v\r]
 	yylval = lval;
 %}
 
+{string}	{
+	loc->step();
+	std::printf("Scanned string: %s\n", yytext);
+	yylval->emplace<std::string>(std::string(yytext + 1, yyleng - 2));
+	return token::TOKEN_STRING;
+}
+
+{comment}	{
+	std::printf("Scanned comment: %s\n", yytext);
+	loc->step();
+}
+
 {blank}+	{
 	loc->step();
 	std::printf("Skipping blank\n");
 };
 
-\n+			{
+\n+		{
 	loc->lines(yyleng);
 	loc->step();
 	std::printf("Skipping newline\n");
 }
 
-"<="    {
+"<="	{
 	std::printf("Scanned <=\n");
 	return token::TOKEN_LE;
 };
 
-">="    {
+">="	{
 	std::printf("Scanned >=\n");
 	return token::TOKEN_GE;
 };

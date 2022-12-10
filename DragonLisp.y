@@ -57,6 +57,7 @@ namespace DragonLisp {
 
 %token END 0 "EOF"
 %token <int64_t> NUMBER "number"
+%token <std::string> STRING "string"
 
 %type <DragonLisp::Token> basic_operator
 %type <DragonLisp::Token> arithmetic_operator
@@ -72,6 +73,7 @@ S
 R
     :
     | R S-Expr
+    | STRING { std::cout << "Scanned string -> " << $1 << std::endl; }
 
 S-Expr
     : LPAREN basic_operator NUMBER NUMBER RPAREN {
@@ -82,7 +84,6 @@ S-Expr
 
 basic_operator
     : arithmetic_operator   { $$ = $1; }
-    | boolean_operator      { $$ = $1; }
     | comparsion_operator   { $$ = $1; }
 ;
 
@@ -91,10 +92,6 @@ arithmetic_operator
     | MINUS { $$ = Token::MINUS; std::printf("I am minus -\n"); }
     | STAR  { $$ = Token::MULTIPLY; std::printf("I am star *\n"); }
     | SLASH { $$ = Token::DIVIDE; std::printf("I am slash /\n"); }
-;
-
-boolean_operator
-    :
 ;
 
 comparsion_operator
