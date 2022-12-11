@@ -123,8 +123,9 @@ array-ref
 ;
 
 L-Value
-	: IDENTIFIER
-	| array-ref
+	: IDENTIFIER	{ std::printf("Parsed L-Value -> IDENTIFIER\n"); }
+	| array-ref	{ std::printf("Parsed L-Value -> array-ref\n"); }
+;
 
 R-Value
 	: IDENTIFIER	{ std::printf("Parsed R-Value -> IDENTIFIER\n"); }
@@ -132,6 +133,7 @@ R-Value
 	| INTEGER	{ std::printf("Parsed R-Value -> INTEGER\n"); }
 	| FLOAT		{ std::printf("Parsed R-Value -> FLOAT\n"); }
 	| STRING	{ std::printf("Parsed R-Value -> STRING\n"); }
+	| array-ref	{ std::printf("Parsed R-Value -> array-ref\n"); }
 ;
 
 R-Value-list
