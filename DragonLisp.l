@@ -27,56 +27,44 @@ blank	[ \t\v\r]
 comment	;[^\n\r]*
 string	\"[^\r\n]*\"
 
-and		(and|AND)
-or		(or|OR)
-not		(not|NOT)
-max		(max|MAX)
-min		(min|MIN)
-if		(if|IF)
-logand	(logand|LOGAND)
-logior	(logior|LOGIOR)
-logxor	(logxor|LOGXOR)
-lognor	(lognor|LOGNOR)
-logeqv	(logeqv|LOGEQV)
-mod		(mod|MOD)
-rem		(rem|REM)
-incf	(incf|INCF)
-decf	(decf|DECF)
-defvar	(defvar|DEFVAR)
-defun	(defun|DEFUN)
-print	(print|PRINT)
-loop	(loop|LOOP)
-setq	(setq|SETQ)
-setf	(setf|SETF)
-quote	(quote|QUOTE)
-for		(for|FOR)
-in		(in|IN)
-from	(from|FROM)
-to		(to|TO)
-dotimes	(dotimes|DOTIMES)
-dolist	(dolist|DOLIST)
-do		(do|DO)
-aref	(aref|AREF)
-makearray	(make-array|MAKE-ARRAY)
-defconstant	(defconstant|DEFCONSTANT)
+and		[aA][nN][dD]
+or		[oO][rR]
+not		[nN][oO][tT]
+max		[mM][aA][xX]
+min		[mM][iI][nN]
+if		[iI][fF]
+logand	[lL][oO][gG][aA][nN][dD]
+logior	[lL][oO][gG][iI][oO][rR]
+logxor	[lL][oO][gG][xX][oO][rR]
+lognor	[lL][oO][gG][nN][oO][rR]
+logeqv	[lL][oO][gG][eE][qQ][vV]
+mod		[mM][oO][dD]
+rem		[rR][eE][mM]
+incf	[iI][nN][cC][fF]
+decf	[dD][eE][cC][fF]
+defvar	[dD][eE][fF][vV][aA][rR]
+defun	[dD][eE][fF][uU][nN]
+print	[pP][rR][iI][nN][tT]
+loop	[lL][oO][oO][pP]
+setq	[sS][eE][tT][qQ]
+setf	[sS][eE][tT][fF]
+quote	[qQ][uU][oO][tT][eE]
+for		[fF][oO][rR]
+in		[iI][nN]
+from	[fF][rR][oO][mM]
+to		[tT][oO]
+dotimes	[dD][oO][tT][iI][mM][eE][sS]
+dolist	[dD][oO][lL][iI][sS][tT]
+do		[dD][oO]
+aref	[aA][rR][eE][fF]
+makearray	[mM][aA][kK][eE][-][aA][rR][rR][aA][yY]
+defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
 %%
 
 %{
 	yylval = lval;
 %}
-
-{string}	{
-	loc->step();
-	std::printf("Scanned string: %s\n", yytext);
-	yylval->emplace<std::string>(std::string(yytext + 1, yyleng - 2));
-	return token::TOKEN_STRING;
-}
-
-{comment}	{
-	std::printf("Scanned comment: %s\n", yytext);
-	loc->step();
-}
 
 {blank}+	{
 	loc->step();
@@ -336,6 +324,18 @@ defconstant	(defconstant|DEFCONSTANT)
 	std::printf("Scanned defconstant\n");
 	return token::TOKEN_DEFCONSTANT;
 };
+
+{string}	{
+	loc->step();
+	std::printf("Scanned string: %s\n", yytext);
+	yylval->emplace<std::string>(std::string(yytext + 1, yyleng - 2));
+	return token::TOKEN_STRING;
+}
+
+{comment}	{
+	std::printf("Scanned comment: %s\n", yytext);
+	loc->step();
+}
 
 {id}	{
 	std::printf("Scanned identifier: %s\n", yytext);
