@@ -78,14 +78,14 @@ defconstant	(defconstant|DEFCONSTANT)
 {blank}+	{
 	loc->step();
 	std::printf("Skipping blank\n");
-	return token::TOKEN_SPACE;
+	// return token::TOKEN_SPACE;
 };
 
 \n+		{
 	loc->lines(yyleng);
 	loc->step();
 	std::printf("Skipping newline\n");
-	return token::TOKEN_SPACE;
+	// return token::TOKEN_SPACE;
 }
 
 {float}	{

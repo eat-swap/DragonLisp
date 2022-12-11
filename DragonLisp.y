@@ -96,131 +96,130 @@ namespace DragonLisp {
 %%
 
 S
-	: END
-	| S-Exprs END
+	: END		{ std::printf("Parsed S -> END\n"); }
+	| S-Exprs END	{ std::printf("Parsed S -> S-Exprs END\n"); }
 ;
 
 S-Exprs
-	: S-Exprs empty S-Expr
-	| S-Expr
+	: S-Exprs S-Expr	{ std::printf("Parsed S-Exprs -> S-Exprs S-Expr\n"); }
+	| S-Expr		{ std::printf("Parsed S-Exprs -> S-Expr\n"); }
 ;
-
-spaces
-	: SPACE
-	| spaces SPACE
-;
-
-empty
-	:
-	| spaces
 ;
 
 R-Value
-	: IDENTIFIER
-	| literal
-	| S-Expr
-
-S-Expr
-	: LPAREN empty S-Expr-helper empty RPAREN
-	| LPAREN empty RPAREN
+	: IDENTIFIER	{ std::printf("Parsed R-Value -> IDENTIFIER\n"); }
+	| S-Expr	{ std::printf("Parsed R-Value -> S-Expr\n"); }
+	| INTEGER	{ std::printf("Parsed R-Value -> INTEGER\n"); }
+	| FLOAT		{ std::printf("Parsed R-Value -> FLOAT\n"); }
+	| STRING	{ std::printf("Parsed R-Value -> STRING\n"); }
 ;
 
-literal
-	: INTEGER
-	| FLOAT
-	| STRING
+R-Value-list
+	: R-Value		{ std::printf("Parsed R-Value-list -> R-Value\n"); }
+	| R-Value-list R-Value	{ std::printf("Parsed R-Value-list -> R-Value-list R-Value\n"); }
+;
+
+S-Expr
+	: LPAREN S-Expr-helper RPAREN	{ std::printf("Parsed S-Expr -> LPAREN S-Expr-helper RPAREN\n"); }
+	| LPAREN RPAREN			{ std::printf("Parsed S-Expr -> LPAREN RPAREN\n"); }
 ;
 
 S-Expr-helper
-	: S-Expr-var-op
-	| S-Expr-unary
-	| S-Expr-binary
-	| S-Expr-list
-	| S-Expr-if
-	| S-Expr-loop
-	| S-Expr-func-def
-	| S-Expr-func-call
+	: S-Expr-var-op		{ std::printf("Parsed S-Expr-helper -> S-Expr-var-op\n"); }
+	| S-Expr-unary		{ std::printf("Parsed S-Expr-helper -> S-Expr-unary\n"); }
+	| S-Expr-binary		{ std::printf("Parsed S-Expr-helper -> S-Expr-binary\n"); }
+	| S-Expr-list		{ std::printf("Parsed S-Expr-helper -> S-Expr-list\n"); }
+	| S-Expr-if		{ std::printf("Parsed S-Expr-helper -> S-Expr-if\n"); }
+	| S-Expr-loop		{ std::printf("Parsed S-Expr-helper -> S-Expr-loop\n"); }
+	| S-Expr-func-def	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-def\n"); }
+	| S-Expr-func-call	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-call\n"); }
 ;
 
 S-Expr-var-op
-	: var-op-tokens spaces IDENTIFIER spaces R-Value
+	: var-op-tokens IDENTIFIER R-Value	{ std::printf("Parsed S-Expr-var-op -> var-op-tokens IDENTIFIER R-Value\n"); }
 ;
 
 var-op-tokens
-	: DEFVAR
-	| SETQ
-	| INCF
-	| DECF
-	| DEFCONSTANT
+	: DEFVAR	{ std::printf("Parsed var-op-tokens -> DEFVAR\n"); }
+	| SETQ		{ std::printf("Parsed var-op-tokens -> SETQ\n"); }
+	| INCF		{ std::printf("Parsed var-op-tokens -> INCF\n"); }
+	| DECF		{ std::printf("Parsed var-op-tokens -> DECF\n"); }
+	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); }
 ;
 
 S-Expr-unary
-	: unary-tokens spaces R-Value
+	: unary-tokens R-Value	{ std::printf("Parsed S-Expr-unary -> unary-tokens R-Value\n"); }
 ;
 
 unary-tokens
-	: NOT
-	| PRINT
+	: NOT	{ std::printf("Parsed unary-tokens -> NOT\n"); }
+	| PRINT	{ std::printf("Parsed unary-tokens -> PRINT\n"); }
 ;
 
 S-Expr-binary
-	: binary-tokens spaces S-Expr empty S-Expr
+	: binary-tokens R-Value R-Value	{ std::printf("Parsed S-Expr-binary -> binary-tokens R-Value R-Value\n"); }
 ;
 
 binary-tokens
-	: LESS
-	| LESS_EQUAL
-	| GREATER
-	| GREATER_EQUAL
-	| LOGNOR
-	| MOD
-	| REM
+	: LESS		{ std::printf("Parsed binary-tokens -> LESS\n"); }
+	| LESS_EQUAL	{ std::printf("Parsed binary-tokens -> LESS_EQUAL\n"); }
+	| GREATER	{ std::printf("Parsed binary-tokens -> GREATER\n"); }
+	| GREATER_EQUAL	{ std::printf("Parsed binary-tokens -> GREATER_EQUAL\n"); }
+	| LOGNOR	{ std::printf("Parsed binary-tokens -> LOGNOR\n"); }
+	| MOD		{ std::printf("Parsed binary-tokens -> MOD\n"); }
+	| REM		{ std::printf("Parsed binary-tokens -> REM\n"); }
 ;
 
 S-Expr-list
-	: list-tokens spaces S-Exprs
+	: list-tokens R-Value-list	{ std::printf("Parsed S-Expr-list -> list-tokens R-Value-list\n"); }
 ;
 
 list-tokens
-	: EQUAL
-	| NOT_EQUAL
-	| AND
-	| OR
-	| MAX
-	| MIN
-	| LOGAND
-	| LOGIOR
-	| LOGXOR
-	| LOGEQV
-	| PLUS
-	| MINUS
-	| MULTIPLY
-	| DIVIDE
+	: EQUAL		{ std::printf("Parsed list-tokens -> EQUAL\n"); }
+	| NOT_EQUAL	{ std::printf("Parsed list-tokens -> NOT_EQUAL\n"); }
+	| AND		{ std::printf("Parsed list-tokens -> AND\n"); }
+	| OR		{ std::printf("Parsed list-tokens -> OR\n"); }
+	| MAX		{ std::printf("Parsed list-tokens -> MAX\n"); }
+	| MIN		{ std::printf("Parsed list-tokens -> MIN\n"); }
+	| LOGAND	{ std::printf("Parsed list-tokens -> LOGAND\n"); }
+	| LOGIOR	{ std::printf("Parsed list-tokens -> LOGIOR\n"); }
+	| LOGXOR	{ std::printf("Parsed list-tokens -> LOGXOR\n"); }
+	| LOGEQV	{ std::printf("Parsed list-tokens -> LOGEQV\n"); }
+	| PLUS		{ std::printf("Parsed list-tokens -> PLUS\n"); }
+	| MINUS		{ std::printf("Parsed list-tokens -> MINUS\n"); }
+	| MULTIPLY	{ std::printf("Parsed list-tokens -> MULTIPLY\n"); }
+	| DIVIDE	{ std::printf("Parsed list-tokens -> DIVIDE\n"); }
 ;
 
 S-Expr-if
-	: IF spaces S-Expr empty S-Expr empty S-Expr
+	: IF R-Value R-Value R-Value	{ std::printf("Parsed S-Expr-if -> IF R-Value R-Value R-Value\n"); }
+	| IF R-Value R-Value		{ std::printf("Parsed S-Expr-if -> IF R-Value R-Value\n"); }
 ;
 
 S-Expr-loop
-	: LOOP empty S-Exprs
-	| LOOP spaces FOR spaces IDENTIFIER spaces IN empty S-Expr empty DO empty S-Exprs
-	| LOOP spaces FOR spaces IDENTIFIER spaces FROM empty S-Expr empty TO empty S-Expr empty DO empty S-Exprs
-	| DOTIMES empty LPAREN empty IDENTIFIER empty S-Expr empty RPAREN empty S-Exprs
-	| DOLIST empty LPAREN empty IDENTIFIER empty S-Expr empty RPAREN empty S-Exprs
+	: LOOP S-Exprs						{ std::printf("Parsed S-Expr-loop -> LOOP S-Exprs\n"); }
+	| LOOP FOR IDENTIFIER IN S-Expr DO S-Exprs		{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER IN S-Expr DO S-Exprs\n"); }
+	| LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs\n"); }
+	| DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs\n"); }
+	| DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs\n"); }
 ;
 
 S-Expr-func-def
-	: DEFUN spaces IDENTIFIER empty LPAREN empty identifier-list empty RPAREN ignored-func-doc S-Exprs
+	: DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs	{ std::printf("Parsed S-Expr-func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
 ;
 
 ignored-func-doc
-	: empty STRING empty
+	:		{ std::printf("Parsed ignored-func-doc -> \n"); }
+	| STRING	{ std::printf("Parsed ignored-func-doc -> STRING\n"); }
 ;
 
 identifier-list
-	: identifier-list IDENTIFIER
-	| IDENTIFIER
+	: identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
+	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); }
+;
+
+S-Expr-func-call
+	: IDENTIFIER R-Value-list	{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER R-Value-list\n"); }
 ;
 
 %%
