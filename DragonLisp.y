@@ -74,6 +74,7 @@ namespace DragonLisp {
     PRINT		"print"
     LOOP		"loop"
     SETQ		"setq"
+    SETF		"setf"
     QUOTE		"quote"
     FOR			"for"
     IN			"in"
@@ -82,6 +83,8 @@ namespace DragonLisp {
     DOTIMES		"dotimes"
     DOLIST		"dolist"
     DO			"do"
+    AREF		"aref"
+    MAKE_ARRAY		"make-array"
     DEFCONSTANT		"defconstant"
 ;
 
@@ -115,6 +118,14 @@ S-Exprs
 	| S-Expr		{ std::printf("Parsed S-Exprs -> S-Expr\n"); }
 ;
 
+array-ref
+	: LPAREN AREF IDENTIFIER R-Value RPAREN	{ std::printf("Parsed array-ref -> ( AREF IDENTIFIER R-Value )\n"); }
+;
+
+L-Value
+	: IDENTIFIER
+	| array-ref
+
 R-Value
 	: IDENTIFIER	{ std::printf("Parsed R-Value -> IDENTIFIER\n"); }
 	| S-Expr	{ std::printf("Parsed R-Value -> S-Expr\n"); }
@@ -129,12 +140,13 @@ R-Value-list
 ;
 
 S-Expr
-	: LPAREN S-Expr-helper RPAREN	{ std::printf("Parsed S-Expr -> LPAREN S-Expr-helper RPAREN\n"); }
-	| LPAREN RPAREN			{ std::printf("Parsed S-Expr -> LPAREN RPAREN\n"); }
+	: LPAREN S-Expr-helper RPAREN	{ std::printf("Parsed S-Expr -> ( S-Expr-helper )\n"); }
+	| LPAREN RPAREN			{ std::printf("Parsed S-Expr -> ()\n"); }
 ;
 
 S-Expr-helper
 	: S-Expr-var-op		{ std::printf("Parsed S-Expr-helper -> S-Expr-var-op\n"); }
+	| S-Expr-Lval-op	{ std::printf("Parsed S-Expr-helper -> S-Expr-Lval-op\n"); }
 	| S-Expr-unary		{ std::printf("Parsed S-Expr-helper -> S-Expr-unary\n"); }
 	| S-Expr-binary		{ std::printf("Parsed S-Expr-helper -> S-Expr-binary\n"); }
 	| S-Expr-list		{ std::printf("Parsed S-Expr-helper -> S-Expr-list\n"); }
@@ -155,13 +167,24 @@ var-op-tokens
 	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); }
 ;
 
+S-Expr-Lval-op
+	: lval-op-tokens L-Value R-Value	{ std::printf("Parsed S-Expr-Lval-op -> lval-op-tokens L-Value R-Value\n"); }
+;
+
+lval-op-tokens
+	: SETF	{ std::printf("Parsed lval-op-tokens -> SETF\n"); }
+	| INCF	{ std::printf("Parsed lval-op-tokens -> INCF\n"); }
+	| DECF	{ std::printf("Parsed lval-op-tokens -> DECF\n"); }
+;
+
 S-Expr-unary
 	: unary-tokens R-Value	{ std::printf("Parsed S-Expr-unary -> unary-tokens R-Value\n"); }
 ;
 
 unary-tokens
-	: NOT	{ std::printf("Parsed unary-tokens -> NOT\n"); }
-	| PRINT	{ std::printf("Parsed unary-tokens -> PRINT\n"); }
+	: NOT		{ std::printf("Parsed unary-tokens -> NOT\n"); }
+	| PRINT		{ std::printf("Parsed unary-tokens -> PRINT\n"); }
+	| MAKE_ARRAY	{ std::printf("Parsed unary-tokens -> MAKE_ARRAY\n"); }
 ;
 
 S-Expr-binary
@@ -206,14 +229,12 @@ S-Expr-if
 
 S-Expr-loop
 	: LOOP S-Exprs						{ std::printf("Parsed S-Expr-loop -> LOOP S-Exprs\n"); }
-	| LOOP FOR IDENTIFIER IN S-Expr DO S-Exprs		{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER IN S-Expr DO S-Exprs\n"); }
 	| LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs\n"); }
-	| DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs\n"); }
-	| DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs\n"); }
+	| DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOTIMES ( IDENTIFIER S-Expr ) S-Exprs\n"); }
 ;
 
 func-def
-	: LPAREN DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
+	: LPAREN DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER ( identifier-list ) ignored-func-doc S-Exprs\n"); }
 ;
 
 ignored-func-doc

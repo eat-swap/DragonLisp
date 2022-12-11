@@ -40,6 +40,7 @@ enum Token {
 	PRINT,
 	LOOP,
 	SETQ,
+	SETF,
 	QUOTE,
 	FOR,
 	IN,
@@ -48,6 +49,8 @@ enum Token {
 	DOTIMES,
 	DOLIST,
 	DO,
+	AREF,
+	MAKE_ARRAY,
 	DEFCONSTANT,
 };
 

@@ -47,6 +47,7 @@ defun	(defun|DEFUN)
 print	(print|PRINT)
 loop	(loop|LOOP)
 setq	(setq|SETQ)
+setf	(setf|SETF)
 quote	(quote|QUOTE)
 for		(for|FOR)
 in		(in|IN)
@@ -55,6 +56,8 @@ to		(to|TO)
 dotimes	(dotimes|DOTIMES)
 dolist	(dolist|DOLIST)
 do		(do|DO)
+aref	(aref|AREF)
+makearray	(make-array|MAKE-ARRAY)
 defconstant	(defconstant|DEFCONSTANT)
 
 %%
@@ -274,6 +277,11 @@ defconstant	(defconstant|DEFCONSTANT)
 	return token::TOKEN_SETQ;
 };
 
+{setf}	{
+	std::printf("Scanned setf\n");
+	return token::TOKEN_SETF;
+};
+
 {quote}	{
 	std::printf("Scanned quote\n");
 	return token::TOKEN_QUOTE;
@@ -312,6 +320,21 @@ defconstant	(defconstant|DEFCONSTANT)
 {do}	{
 	std::printf("Scanned do\n");
 	return token::TOKEN_DO;
+};
+
+{aref}	{
+	std::printf("Scanned aref\n");
+	return token::TOKEN_AREF;
+};
+
+{makearray}	{
+	std::printf("Scanned makearray\n");
+	return token::TOKEN_MAKE_ARRAY;
+};
+
+{defconstant}	{
+	std::printf("Scanned defconstant\n");
+	return token::TOKEN_DEFCONSTANT;
 };
 
 {id}	{
