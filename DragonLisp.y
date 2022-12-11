@@ -222,7 +222,8 @@ ignored-func-doc
 ;
 
 identifier-list
-	: identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
+	:				{ std::printf("Parsed identifier-list -> \n"); }
+	| identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
 	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); }
 ;
 
