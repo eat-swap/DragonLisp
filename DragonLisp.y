@@ -101,10 +101,13 @@ S
 ;
 
 statements
-	: S-Exprs		{ std::printf("Parsed statements -> S-Exprs\n"); }
-	| func-def		{ std::printf("Parsed statements -> func-def\n"); }
-	| statements S-Exprs	{ std::printf("Parsed statements -> statements S-Exprs\n"); }
-	| statements func-def	{ std::printf("Parsed statements -> statements func-def\n"); }
+	: statement		{ std::printf("Parsed statements -> statement\n"); }
+	| statements statement	{ std::printf("Parsed statements -> statements statement\n"); }
+;
+
+statement
+	: S-Expr		{ std::printf("Parsed statement -> S-Expr\n"); }
+	| func-def		{ std::printf("Parsed statement -> func-def\n"); }
 ;
 
 S-Exprs
@@ -210,7 +213,7 @@ S-Expr-loop
 ;
 
 func-def
-	: DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
+	: LPAREN DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
 ;
 
 ignored-func-doc
