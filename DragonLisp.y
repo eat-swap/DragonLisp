@@ -162,8 +162,6 @@ S-Expr-var-op
 var-op-tokens
 	: DEFVAR	{ std::printf("Parsed var-op-tokens -> DEFVAR\n"); }
 	| SETQ		{ std::printf("Parsed var-op-tokens -> SETQ\n"); }
-	| INCF		{ std::printf("Parsed var-op-tokens -> INCF\n"); }
-	| DECF		{ std::printf("Parsed var-op-tokens -> DECF\n"); }
 	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); }
 ;
 

@@ -10,7 +10,7 @@ LEXFLAGS ?= -T --hex
 
 # Syntax Analysis
 YACC = bison
-YACCFLAGS ?= -Wall --color -v -t -d
+YACCFLAGS ?= -Wall --color -v -t -d -Wcounterexamples
 LANG = c++
 
 # Compile C/C++ Code
