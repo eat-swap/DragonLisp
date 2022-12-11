@@ -55,3 +55,6 @@
 (defvar arr (make-array 10))
 (loop for i from 0 to 9 do (setf (aref arr i) i))
 (loop for i from 0 to 9 do (print (aref arr i))) ; prints 0 1 2 3 4 5 6 7 8 9
+
+(dotimes (i 10) (print i) (setf (aref arr i) (* i i i))) ; prints 0 1 2 3 4 5 6 7 8 9
+(dotimes (i 10) (print (aref arr i))) ; prints 0 1 8 27 64 125 216 343 512 729
