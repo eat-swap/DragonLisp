@@ -96,14 +96,20 @@ namespace DragonLisp {
 %%
 
 S
-	: END		{ std::printf("Parsed S -> END\n"); }
-	| S-Exprs END	{ std::printf("Parsed S -> S-Exprs END\n"); }
+	: END			{ std::printf("Parsed S -> END\n"); }
+	| statements END	{ std::printf("Parsed S -> statements END\n"); }
+;
+
+statements
+	: S-Exprs		{ std::printf("Parsed statements -> S-Exprs\n"); }
+	| func-def		{ std::printf("Parsed statements -> func-def\n"); }
+	| statements S-Exprs	{ std::printf("Parsed statements -> statements S-Exprs\n"); }
+	| statements func-def	{ std::printf("Parsed statements -> statements func-def\n"); }
 ;
 
 S-Exprs
 	: S-Exprs S-Expr	{ std::printf("Parsed S-Exprs -> S-Exprs S-Expr\n"); }
 	| S-Expr		{ std::printf("Parsed S-Exprs -> S-Expr\n"); }
-;
 ;
 
 R-Value
@@ -131,7 +137,6 @@ S-Expr-helper
 	| S-Expr-list		{ std::printf("Parsed S-Expr-helper -> S-Expr-list\n"); }
 	| S-Expr-if		{ std::printf("Parsed S-Expr-helper -> S-Expr-if\n"); }
 	| S-Expr-loop		{ std::printf("Parsed S-Expr-helper -> S-Expr-loop\n"); }
-	| S-Expr-func-def	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-def\n"); }
 	| S-Expr-func-call	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-call\n"); }
 ;
 
@@ -204,8 +209,8 @@ S-Expr-loop
 	| DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOLIST LPAREN IDENTIFIER S-Expr RPAREN S-Exprs\n"); }
 ;
 
-S-Expr-func-def
-	: DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs	{ std::printf("Parsed S-Expr-func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
+func-def
+	: DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs\n"); }
 ;
 
 ignored-func-doc
