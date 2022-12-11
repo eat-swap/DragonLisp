@@ -228,9 +228,9 @@ S-Expr-if
 ;
 
 S-Expr-loop
-	: LOOP S-Exprs						{ std::printf("Parsed S-Expr-loop -> LOOP S-Exprs\n"); }
-	| LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM S-Expr TO S-Expr DO S-Exprs\n"); }
-	| DOTIMES LPAREN IDENTIFIER S-Expr RPAREN S-Exprs	{ std::printf("Parsed S-Expr-loop -> DOTIMES ( IDENTIFIER S-Expr ) S-Exprs\n"); }
+	: LOOP S-Exprs							{ std::printf("Parsed S-Expr-loop -> LOOP S-Exprs\n"); }
+	| LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO S-Exprs	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO S-Exprs\n"); }
+	| DOTIMES LPAREN IDENTIFIER R-Value RPAREN S-Exprs		{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER R-Value RPAREN S-Exprs\n"); }
 ;
 
 func-def
