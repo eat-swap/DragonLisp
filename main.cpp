@@ -2,7 +2,9 @@
 
 #include "DragonLispDriver.hh"
 
-int main() {
+int main(int argc, char** argv) {
 	DragonLisp::DLDriver driver;
-	return driver.parse(std::cin);
+	if (argc <= 1)
+		return driver.parse(std::cin);
+	return driver.parse(argv[1]);
 }

@@ -96,6 +96,8 @@ namespace DragonLisp {
 
 %define parse.error verbose
 
+%start S
+
 %%
 
 S

@@ -14,8 +14,10 @@ DLDriver::~DLDriver() {
 
 int DLDriver::parse(const std::string& f) {
 	std::ifstream in(f);
-	if (!in.good())
+	if (!in.good()) {
+		std::printf("Could not open file %s\n", f.c_str());
 		return 1;
+	}
 	return this->parse(in, f);
 }
 
