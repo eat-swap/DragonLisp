@@ -54,6 +54,7 @@ from	(from|FROM)
 to		(to|TO)
 dotimes	(dotimes|DOTIMES)
 dolist	(dolist|DOLIST)
+do		(do|DO)
 defconstant	(defconstant|DEFCONSTANT)
 
 %%
@@ -276,6 +277,41 @@ defconstant	(defconstant|DEFCONSTANT)
 {quote}	{
 	std::printf("Scanned quote\n");
 	return token::TOKEN_QUOTE;
+};
+
+{for}	{
+	std::printf("Scanned for\n");
+	return token::TOKEN_FOR;
+};
+
+{in}	{
+	std::printf("Scanned in\n");
+	return token::TOKEN_IN;
+};
+
+{from}	{
+	std::printf("Scanned from\n");
+	return token::TOKEN_FROM;
+};
+
+{to}	{
+	std::printf("Scanned to\n");
+	return token::TOKEN_TO;
+};
+
+{dotimes}	{
+	std::printf("Scanned dotimes\n");
+	return token::TOKEN_DOTIMES;
+};
+
+{dolist}	{
+	std::printf("Scanned dolist\n");
+	return token::TOKEN_DOLIST;
+};
+
+{do}	{
+	std::printf("Scanned do\n");
+	return token::TOKEN_DO;
 };
 
 {id}	{

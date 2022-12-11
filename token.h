@@ -47,6 +47,7 @@ enum Token {
 	TO,
 	DOTIMES,
 	DOLIST,
+	DO,
 	DEFCONSTANT,
 };
 
