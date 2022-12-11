@@ -232,7 +232,7 @@ S-Expr-loop
 ;
 
 func-def
-	: LPAREN DEFUN IDENTIFIER LPAREN identifier-list RPAREN ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER ( identifier-list ) ignored-func-doc S-Exprs\n"); }
+	: LPAREN DEFUN IDENTIFIER func-arg-list ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER ( identifier-list ) ignored-func-doc S-Exprs\n"); }
 ;
 
 ignored-func-doc
@@ -240,9 +240,12 @@ ignored-func-doc
 	| STRING	{ std::printf("Parsed ignored-func-doc -> STRING\n"); }
 ;
 
+func-arg-list
+	: LPAREN RPAREN			{ std::printf("Parsed func-arg-list -> ( )\n"); }
+	| LPAREN identifier-list RPAREN	{ std::printf("Parsed func-arg-list -> ( identifier-list )\n"); }
+
 identifier-list
-	: %empty			{ std::printf("Parsed identifier-list -> \n"); }
-	| identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
+	: identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
 	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); }
 ;
 
