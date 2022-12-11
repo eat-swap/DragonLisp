@@ -21,7 +21,7 @@ using token = DragonLisp::DLParser::token;
 %option verbose backup warn noyywrap c++ nounistd debug noline
 
 float	[+-]?[0-9]*[.][0-9]+([eE][+-][0-9]+)?
-int		[+-]?(0[xX][0-9A-Fa-f]*|0[0-7]+|[1-9][0-9]*)
+int		[+-]?(0[xX][0-9A-Fa-f]*|0[0-7]*|[1-9][0-9]*)
 id		[a-zA-Z_][a-zA-Z_0-9]*
 blank	[ \t\v\r]
 comment	;[^\n\r]*
@@ -68,14 +68,14 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
 {blank}+	{
 	loc->step();
-	std::printf("Skipping blank\n");
+	// std::printf("Skipping blank\n");
 	// return token::TOKEN_SPACE;
 };
 
 \n+		{
 	loc->lines(yyleng);
 	loc->step();
-	std::printf("Skipping newline\n");
+	// std::printf("Skipping newline\n");
 	// return token::TOKEN_SPACE;
 }
 
