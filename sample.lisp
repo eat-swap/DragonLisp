@@ -6,11 +6,11 @@
 (defconstant xconst (= (and 3 6 9) (or 9 6 3))) ;; xconst is T
 (print xconst)
 
-(print
+(pRiNt
 	(>= (max 4 5 8 2 1 9) (min 3843 29 72 222))
 ); => NIL
 
-(print (not
+(PrInT (not
 	(>= (max 4 5 8 2 1 9) (min 3843 29 72 222))
 )); => T
 
@@ -20,7 +20,7 @@
 ) ; x <- 1033
 
 (
-    defun fibonacci (x)
+    DeFuN fibonacci (x)
     "This function calculates fibonacci numbers."
     (
         if (<= x 1)
@@ -57,5 +57,5 @@
 (loop for i from 0 to 9 do (setf (aref arr i) i))
 (loop for i from 0 to 9 do (print (aref arr i))) ; prints 0 1 2 3 4 5 6 7 8 9
 
-(dotimes (i (+ 99999 -99989)) (print i) (setf (aref arr i) (* i i i))) ; prints 0 1 2 3 4 5 6 7 8 9
-(dotimes (i 10) (print (aref arr i))) ; prints 0 1 8 27 64 125 216 343 512 729
+(DoTiMeS (i (+ 99999 -99989)) (print i) (setf (aref arr i) (* i i i))) ; prints 0 1 2 3 4 5 6 7 8 9
+(dOtImEs (i 10) (print (aref arr i))) ; prints 0 1 8 27 64 125 216 343 512 729
