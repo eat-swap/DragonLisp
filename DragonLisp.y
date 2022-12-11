@@ -238,12 +238,12 @@ func-def
 ;
 
 ignored-func-doc
-	:		{ std::printf("Parsed ignored-func-doc -> \n"); }
+	: %empty	{ std::printf("Parsed ignored-func-doc -> \n"); }
 	| STRING	{ std::printf("Parsed ignored-func-doc -> STRING\n"); }
 ;
 
 identifier-list
-	:				{ std::printf("Parsed identifier-list -> \n"); }
+	: %empty			{ std::printf("Parsed identifier-list -> \n"); }
 	| identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
 	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); }
 ;
