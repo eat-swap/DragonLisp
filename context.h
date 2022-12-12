@@ -27,6 +27,18 @@ public:
 		if (!this->parent)
 			delete this->funcs;
 	}
+
+	std::shared_ptr<Value> getVariable(const std::string& name) const {
+		if (this->variables.contains(name))
+			return this->variables[name];
+		if (this->parent)
+			return this->parent->getVariable(name);
+		return nullptr;
+	}
+
+	void setVariable(const std::string& name, std::shared_ptr<Value> value) {
+		this->variables[name] = std::move(value);
+	}
 };
 
 }
