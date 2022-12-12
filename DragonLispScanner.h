@@ -1,5 +1,5 @@
-#ifndef __DRAGON_LISP_SCANNER_HH__
-#define __DRAGON_LISP_SCANNER_HH__
+#ifndef __DRAGON_LISP_SCANNER_H__
+#define __DRAGON_LISP_SCANNER_H__
 
 #ifndef yyFlexLexerOnce
 #include <FlexLexer.h>
@@ -32,4 +32,4 @@ public:
 
 } // end namespace DragonLisp
 
-#endif // __DRAGON_LISP_SCANNER_HH__
+#endif // __DRAGON_LISP_SCANNER_H__

@@ -1,5 +1,5 @@
-#ifndef __DRAGON_LISP_DRIVER_HH__
-#define __DRAGON_LISP_DRIVER_HH__
+#ifndef __DRAGON_LISP_DRIVER_H__
+#define __DRAGON_LISP_DRIVER_H__
 
 #include <string>
 #include <istream>
@@ -28,4 +28,4 @@ private:
 
 } // end namespace DragonLisp
 
-#endif // __DRAGON_LISP_DRIVER_HH__
+#endif // __DRAGON_LISP_DRIVER_H__
