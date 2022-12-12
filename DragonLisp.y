@@ -127,11 +127,6 @@ statement
 	| func-def		{ std::printf("Parsed statement -> func-def\n"); }
 ;
 
-S-Exprs
-	: S-Exprs S-Expr	{ std::printf("Parsed S-Exprs -> S-Exprs S-Expr\n"); }
-	| S-Expr		{ std::printf("Parsed S-Exprs -> S-Expr\n"); }
-;
-
 array-ref
 	: LPAREN AREF IDENTIFIER R-Value RPAREN	{ std::printf("Parsed array-ref -> ( AREF IDENTIFIER R-Value )\n"); }
 ;
@@ -148,6 +143,7 @@ func-body-expr
 func-body
 	: func-body-expr		{ std::printf("Parsed func-body -> func-body-expr\n"); }
 	| func-body func-body-expr	{ std::printf("Parsed func-body -> func-body func-body-expr\n"); }
+;
 
 L-Value
 	: IDENTIFIER	{ std::printf("Parsed L-Value -> IDENTIFIER\n"); }
