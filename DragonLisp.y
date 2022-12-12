@@ -86,6 +86,7 @@ namespace DragonLisp {
     AREF		"aref"
     T			"t"
     NIL			"nil"
+    RETURN		"return"
     MAKE_ARRAY		"make-array"
     DEFCONSTANT		"defconstant"
 ;
