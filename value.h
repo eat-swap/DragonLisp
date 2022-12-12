@@ -16,44 +16,6 @@ public:
 	virtual bool isArray() const = 0;
 };
 
-class ArrayValue : public Value {
-private:
-	std::vector<ValueVariant> values;
-
-	std::size_t size;
-
-public:
-	ArrayValue() = delete;
-
-	explicit ArrayValue(std::size_t s) : values(s), size(s) {}
-
-	explicit ArrayValue(std::vector<ValueVariant> v) : values(std::move(v)), size(this->values.size()) {}
-
-	bool isArray() const override final {
-		return true;
-	}
-
-	std::size_t getSize() const {
-		return this->size;
-	}
-
-	ValueVariant& operator[](std::size_t i) {
-		return this->values[i];
-	}
-
-	const ValueVariant& operator[](std::size_t i) const {
-		return this->values[i];
-	}
-
-	std::vector<ValueVariant>& getValues() {
-		return this->values;
-	}
-
-	const std::vector<ValueVariant>& getValues() const {
-		return this->values;
-	}
-};
-
 class SingleValue : public Value {
 private:
 	ValueType type;
@@ -69,7 +31,7 @@ public:
 
 	explicit SingleValue(std::string v) : value(std::move(v)) {}
 
-	SingleValue() = delete;
+	SingleValue() : SingleValue(ValueType::TYPE_NIL) {}
 
 	bool isArray() const override final {
 		return false;
@@ -125,6 +87,40 @@ public:
 
 	void setValue(ValueVariant v) {
 		this->value = std::move(v);
+	}
+};
+
+class ArrayValue : public Value {
+private:
+	std::vector<SingleValue> values;
+
+	std::size_t size;
+
+public:
+	ArrayValue() = delete;
+
+	explicit ArrayValue(std::size_t s) : values(s), size(s) {}
+
+	explicit ArrayValue(std::vector<SingleValue> v) : values(std::move(v)), size(this->values.size()) {}
+
+	bool isArray() const override final {
+		return true;
+	}
+
+	std::size_t getSize() const {
+		return this->size;
+	}
+
+	SingleValue operator[](std::size_t i) const {
+		return this->values[i];
+	}
+
+	std::vector<SingleValue>& getValues() {
+		return this->values;
+	}
+
+	const std::vector<SingleValue>& getValues() const {
+		return this->values;
 	}
 };
 
