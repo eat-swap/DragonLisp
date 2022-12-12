@@ -57,6 +57,8 @@ dotimes	[dD][oO][tT][iI][mM][eE][sS]
 dolist	[dD][oO][lL][iI][sS][tT]
 do		[dD][oO]
 aref	[aA][rR][eE][fF]
+t		[tT]
+nil		[nN][iI][lL]
 makearray	[mM][aA][kK][eE][-][aA][rR][rR][aA][yY]
 defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
@@ -313,6 +315,16 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 {aref}	{
 	std::printf("Scanned aref\n");
 	return token::TOKEN_AREF;
+};
+
+{t}		{
+	std::printf("Scanned t\n");
+	return token::TOKEN_T;
+};
+
+{nil}	{
+	std::printf("Scanned nil\n");
+	return token::TOKEN_NIL;
 };
 
 {makearray}	{

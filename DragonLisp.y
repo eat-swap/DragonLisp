@@ -84,6 +84,8 @@ namespace DragonLisp {
     DOLIST		"dolist"
     DO			"do"
     AREF		"aref"
+    T			"t"
+    NIL			"nil"
     MAKE_ARRAY		"make-array"
     DEFCONSTANT		"defconstant"
 ;
@@ -136,6 +138,8 @@ R-Value
 	| FLOAT		{ std::printf("Parsed R-Value -> FLOAT\n"); }
 	| STRING	{ std::printf("Parsed R-Value -> STRING\n"); }
 	| array-ref	{ std::printf("Parsed R-Value -> array-ref\n"); }
+	| NIL		{ std::printf("Parsed R-Value -> NIL\n"); }
+	| T		{ std::printf("Parsed R-Value -> T\n"); }
 ;
 
 R-Value-list
