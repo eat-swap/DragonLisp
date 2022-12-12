@@ -14,13 +14,13 @@ YACCFLAGS ?= -Wall --color -v -t -d -Wcounterexamples
 LANG = c++
 
 # Compile C/C++ Code
-CC = gcc
-CXX = g++
+CC = clang
+CXX = clang++
 OUTPUT ?= $(PROJ).exe
 
 COMMONFLAGS ?= -g -Wall
-CFLAGS ?= $(COMMONFLAGS)
-CXXFLAGS ?= $(COMMONFLAGS)
+CFLAGS ?= $(COMMONFLAGS) -std=c18
+CXXFLAGS ?= $(COMMONFLAGS) -std=c++20
 
 MISCOBJ = main DragonLispDriver
 OBJS  = $(addsuffix .o, $(MISCOBJ))
