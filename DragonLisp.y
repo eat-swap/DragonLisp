@@ -28,7 +28,7 @@ namespace DragonLisp {
 #include <cstdint>
 #include <iostream>
 
-#include "DragonLispDriver.hh"
+#include "DragonLispDriver.h"
 
 #undef yylex
 #define yylex scanner.yylex

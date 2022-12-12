@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <iostream>
 
-#include "DragonLispScanner.hh"
+#include "DragonLispScanner.h"
 
 #undef YY_DECL
 #define YY_DECL int DragonLisp::DLScanner::yylex(DragonLisp::DLParser::semantic_type* const lval, DragonLisp::DLParser::location_type* location, DragonLisp::DLDriver& drv)

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "DragonLispDriver.hh"
+#include "DragonLispDriver.h"
 
 int main(int argc, char** argv) {
 	DragonLisp::DLDriver driver;

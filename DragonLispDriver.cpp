@@ -1,7 +1,7 @@
 #include <fstream>
 #include <string>
 
-#include "DragonLispDriver.hh"
+#include "DragonLispDriver.h"
 
 namespace DragonLisp {
 

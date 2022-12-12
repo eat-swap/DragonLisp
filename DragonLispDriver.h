@@ -4,7 +4,7 @@
 #include <string>
 #include <istream>
 
-#include "DragonLispScanner.hh"
+#include "DragonLispScanner.h"
 #include "DragonLisp.tab.hh"
 
 namespace DragonLisp {
