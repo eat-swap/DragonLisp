@@ -22,7 +22,7 @@ COMMONFLAGS ?= -g -Wall
 CFLAGS ?= $(COMMONFLAGS) -std=c18
 CXXFLAGS ?= $(COMMONFLAGS) -std=c++20
 
-MISCOBJ = main DragonLispDriver
+MISCOBJ = main DragonLispDriver AST
 OBJS  = $(addsuffix .o, $(MISCOBJ))
 
 all: compile
@@ -49,6 +49,7 @@ compile_debug: lexer parser
 	$(CXX) $(CXXFLAGS) -o $(OUTPUT) \
 		main.cpp \
 		DragonLispDriver.cpp \
+		AST.cpp \
 		DragonLisp.tab.cc \
 		lex.yy.cc
 
