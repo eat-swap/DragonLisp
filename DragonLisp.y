@@ -10,6 +10,7 @@
 #include <typeinfo>
 
 #include "token.h"
+#include "AST.h"
 
 namespace DragonLisp {
     class DLDriver;
@@ -97,6 +98,14 @@ namespace DragonLisp {
 %token <std::string>    STRING		"string"
 %token <std::string>    IDENTIFIER	"identifier"
 
+%type <DragonLisp::Token>	var-op-tokens
+%type <DragonLisp::Token>	lval-op-tokens
+%type <DragonLisp::Token>	unary-tokens
+%type <DragonLisp::Token>	binary-tokens
+%type <DragonLisp::Token>	list-tokens
+
+%type <std::unique_ptr<DragonLisp::ExprAST>> R-Value
+
 %define parse.error verbose
 
 %start S
@@ -169,9 +178,9 @@ S-Expr-var-op
 ;
 
 var-op-tokens
-	: DEFVAR	{ std::printf("Parsed var-op-tokens -> DEFVAR\n"); }
-	| SETQ		{ std::printf("Parsed var-op-tokens -> SETQ\n"); }
-	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); }
+	: DEFVAR	{ std::printf("Parsed var-op-tokens -> DEFVAR\n"); $$ = DragonLisp::Token::DEFVAR; }
+	| SETQ		{ std::printf("Parsed var-op-tokens -> SETQ\n"); $$ = DragonLisp::Token::SETQ; }
+	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); $$ = DragonLisp::Token::DEFCONSTANT; }
 ;
 
 S-Expr-Lval-op
@@ -179,9 +188,9 @@ S-Expr-Lval-op
 ;
 
 lval-op-tokens
-	: SETF	{ std::printf("Parsed lval-op-tokens -> SETF\n"); }
-	| INCF	{ std::printf("Parsed lval-op-tokens -> INCF\n"); }
-	| DECF	{ std::printf("Parsed lval-op-tokens -> DECF\n"); }
+	: SETF	{ std::printf("Parsed lval-op-tokens -> SETF\n"); $$ = DragonLisp::Token::SETF; }
+	| INCF	{ std::printf("Parsed lval-op-tokens -> INCF\n"); $$ = DragonLisp::Token::INCF; }
+	| DECF	{ std::printf("Parsed lval-op-tokens -> DECF\n"); $$ = DragonLisp::Token::DECF; }
 ;
 
 S-Expr-unary
@@ -189,9 +198,9 @@ S-Expr-unary
 ;
 
 unary-tokens
-	: NOT		{ std::printf("Parsed unary-tokens -> NOT\n"); }
-	| PRINT		{ std::printf("Parsed unary-tokens -> PRINT\n"); }
-	| MAKE_ARRAY	{ std::printf("Parsed unary-tokens -> MAKE_ARRAY\n"); }
+	: NOT		{ std::printf("Parsed unary-tokens -> NOT\n"); $$ = DragonLisp::Token::NOT; }
+	| PRINT		{ std::printf("Parsed unary-tokens -> PRINT\n"); $$ = DragonLisp::Token::PRINT; }
+	| MAKE_ARRAY	{ std::printf("Parsed unary-tokens -> MAKE_ARRAY\n"); $$ = DragonLisp::Token::MAKE_ARRAY; }
 ;
 
 S-Expr-binary
@@ -199,13 +208,13 @@ S-Expr-binary
 ;
 
 binary-tokens
-	: LESS		{ std::printf("Parsed binary-tokens -> LESS\n"); }
-	| LESS_EQUAL	{ std::printf("Parsed binary-tokens -> LESS_EQUAL\n"); }
-	| GREATER	{ std::printf("Parsed binary-tokens -> GREATER\n"); }
-	| GREATER_EQUAL	{ std::printf("Parsed binary-tokens -> GREATER_EQUAL\n"); }
-	| LOGNOR	{ std::printf("Parsed binary-tokens -> LOGNOR\n"); }
-	| MOD		{ std::printf("Parsed binary-tokens -> MOD\n"); }
-	| REM		{ std::printf("Parsed binary-tokens -> REM\n"); }
+	: LESS		{ std::printf("Parsed binary-tokens -> LESS\n"); $$ = DragonLisp::Token::LESS; }
+	| LESS_EQUAL	{ std::printf("Parsed binary-tokens -> LESS_EQUAL\n"); $$ = DragonLisp::Token::LESS_EQUAL; }
+	| GREATER	{ std::printf("Parsed binary-tokens -> GREATER\n"); $$ = DragonLisp::Token::GREATER; }
+	| GREATER_EQUAL	{ std::printf("Parsed binary-tokens -> GREATER_EQUAL\n"); $$ = DragonLisp::Token::GREATER_EQUAL; }
+	| LOGNOR	{ std::printf("Parsed binary-tokens -> LOGNOR\n"); $$ = DragonLisp::Token::LOGNOR; }
+	| MOD		{ std::printf("Parsed binary-tokens -> MOD\n"); $$ = DragonLisp::Token::MOD; }
+	| REM		{ std::printf("Parsed binary-tokens -> REM\n"); $$ = DragonLisp::Token::MOD; /* This is the same as MOD. */ }
 ;
 
 S-Expr-list
@@ -213,20 +222,20 @@ S-Expr-list
 ;
 
 list-tokens
-	: EQUAL		{ std::printf("Parsed list-tokens -> EQUAL\n"); }
-	| NOT_EQUAL	{ std::printf("Parsed list-tokens -> NOT_EQUAL\n"); }
-	| AND		{ std::printf("Parsed list-tokens -> AND\n"); }
-	| OR		{ std::printf("Parsed list-tokens -> OR\n"); }
-	| MAX		{ std::printf("Parsed list-tokens -> MAX\n"); }
-	| MIN		{ std::printf("Parsed list-tokens -> MIN\n"); }
-	| LOGAND	{ std::printf("Parsed list-tokens -> LOGAND\n"); }
-	| LOGIOR	{ std::printf("Parsed list-tokens -> LOGIOR\n"); }
-	| LOGXOR	{ std::printf("Parsed list-tokens -> LOGXOR\n"); }
-	| LOGEQV	{ std::printf("Parsed list-tokens -> LOGEQV\n"); }
-	| PLUS		{ std::printf("Parsed list-tokens -> PLUS\n"); }
-	| MINUS		{ std::printf("Parsed list-tokens -> MINUS\n"); }
-	| MULTIPLY	{ std::printf("Parsed list-tokens -> MULTIPLY\n"); }
-	| DIVIDE	{ std::printf("Parsed list-tokens -> DIVIDE\n"); }
+	: EQUAL		{ std::printf("Parsed list-tokens -> EQUAL\n"); $$ = DragonLisp::Token::EQUAL; }
+	| NOT_EQUAL	{ std::printf("Parsed list-tokens -> NOT_EQUAL\n"); $$ = DragonLisp::Token::NOT_EQUAL; }
+	| AND		{ std::printf("Parsed list-tokens -> AND\n"); $$ = DragonLisp::Token::AND; }
+	| OR		{ std::printf("Parsed list-tokens -> OR\n"); $$ = DragonLisp::Token::OR; }
+	| MAX		{ std::printf("Parsed list-tokens -> MAX\n"); $$ = DragonLisp::Token::MAX; }
+	| MIN		{ std::printf("Parsed list-tokens -> MIN\n"); $$ = DragonLisp::Token::MIN; }
+	| LOGAND	{ std::printf("Parsed list-tokens -> LOGAND\n"); $$ = DragonLisp::Token::LOGAND; }
+	| LOGIOR	{ std::printf("Parsed list-tokens -> LOGIOR\n"); $$ = DragonLisp::Token::LOGIOR; }
+	| LOGXOR	{ std::printf("Parsed list-tokens -> LOGXOR\n"); $$ = DragonLisp::Token::LOGXOR; }
+	| LOGEQV	{ std::printf("Parsed list-tokens -> LOGEQV\n"); $$ = DragonLisp::Token::LOGEQV; }
+	| PLUS		{ std::printf("Parsed list-tokens -> PLUS\n"); $$ = DragonLisp::Token::PLUS; }
+	| MINUS		{ std::printf("Parsed list-tokens -> MINUS\n"); $$ = DragonLisp::Token::MINUS; }
+	| MULTIPLY	{ std::printf("Parsed list-tokens -> MULTIPLY\n"); $$ = DragonLisp::Token::MULTIPLY; }
+	| DIVIDE	{ std::printf("Parsed list-tokens -> DIVIDE\n"); $$ = DragonLisp::Token::DIVIDE; }
 ;
 
 S-Expr-if
