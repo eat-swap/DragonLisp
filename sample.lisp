@@ -21,7 +21,6 @@
 
 (
     DeFuN fibonacci (x)
-    "This function calculates fibonacci numbers."
     (
         if (<= x 1)
         1

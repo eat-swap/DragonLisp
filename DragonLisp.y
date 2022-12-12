@@ -136,6 +136,19 @@ array-ref
 	: LPAREN AREF IDENTIFIER R-Value RPAREN	{ std::printf("Parsed array-ref -> ( AREF IDENTIFIER R-Value )\n"); }
 ;
 
+return-expr
+	: LPAREN RETURN R-Value RPAREN	{ std::printf("Parsed return-expr -> ( RETURN R-Value )\n"); }
+;
+
+func-body-expr
+	: return-expr		{ std::printf("Parsed func-body -> return-expr\n"); }
+	| R-Value		{ std::printf("Parsed func-body -> R-Value\n"); }
+;
+
+func-body
+	: func-body-expr		{ std::printf("Parsed func-body -> func-body-expr\n"); }
+	| func-body func-body-expr	{ std::printf("Parsed func-body -> func-body func-body-expr\n"); }
+
 L-Value
 	: IDENTIFIER	{ std::printf("Parsed L-Value -> IDENTIFIER\n"); }
 	| array-ref	{ std::printf("Parsed L-Value -> array-ref\n"); }
@@ -244,18 +257,13 @@ S-Expr-if
 ;
 
 S-Expr-loop
-	: LOOP S-Exprs							{ std::printf("Parsed S-Expr-loop -> LOOP S-Exprs\n"); }
-	| LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO S-Exprs	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO S-Exprs\n"); }
-	| DOTIMES LPAREN IDENTIFIER R-Value RPAREN S-Exprs		{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER R-Value RPAREN S-Exprs\n"); }
+	: LOOP func-body						{ std::printf("Parsed S-Expr-loop -> LOOP func-body\n"); }
+	| LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body\n"); }
+	| DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body		{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body\n"); }
 ;
 
 func-def
-	: LPAREN DEFUN IDENTIFIER func-arg-list ignored-func-doc S-Exprs RPAREN	{ std::printf("Parsed func-def -> DEFUN IDENTIFIER ( identifier-list ) ignored-func-doc S-Exprs\n"); }
-;
-
-ignored-func-doc
-	: %empty	{ std::printf("Parsed ignored-func-doc -> \n"); }
-	| STRING	{ std::printf("Parsed ignored-func-doc -> STRING\n"); }
+	: LPAREN DEFUN IDENTIFIER func-arg-list func-body RPAREN	{ std::printf("Parsed func-def -> ( DEFUN IDENTIFIER func-arg-list func-body )\n"); }
 ;
 
 func-arg-list
