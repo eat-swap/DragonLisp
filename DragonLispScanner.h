@@ -24,7 +24,7 @@ public:
 
 	using FlexLexer::yylex;
 	virtual int yylex(
-		DragonLisp::DLParser::semantic_type* const lval,
+		DragonLisp::DLParser::semantic_type* lval,
 		DragonLisp::DLParser::location_type* location,
 		DragonLisp::DLDriver& drv
 	);
