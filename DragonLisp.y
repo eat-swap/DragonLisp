@@ -248,8 +248,8 @@ list-tokens
 ;
 
 S-Expr-if
-	: IF R-Value R-Value R-Value	{ std::printf("Parsed S-Expr-if -> IF R-Value R-Value R-Value\n"); }
-	| IF R-Value R-Value		{ std::printf("Parsed S-Expr-if -> IF R-Value R-Value\n"); }
+	: IF R-Value func-body-expr func-body-expr	{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr func-body-expr\n"); }
+	| IF R-Value func-body-expr			{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr\n"); }
 ;
 
 S-Expr-loop
@@ -273,6 +273,7 @@ identifier-list
 
 S-Expr-func-call
 	: IDENTIFIER R-Value-list	{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER R-Value-list\n"); }
+	| IDENTIFIER			{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER\n"); }
 ;
 
 %%
