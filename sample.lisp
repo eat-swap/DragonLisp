@@ -18,6 +18,7 @@
 	x
 	(logand (logior 28892 28348 29293) (logxor 118 48441 59410) (logeqv 3892 2938 2919))
 ) ; x <- 1033
+(print x)
 
 (
     DeFuN fibonacci (x)
