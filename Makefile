@@ -14,8 +14,8 @@ YACCFLAGS ?= -Wall --color -v -t -d -Wcounterexamples
 LANG = c++
 
 # Compile C/C++ Code
-CC = clang
-CXX = clang++
+CC = gcc
+CXX = g++
 OUTPUT ?= $(PROJ).exe
 
 COMMONFLAGS ?= -g -Wall
