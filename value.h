@@ -14,6 +14,10 @@ using ValueVariant = std::variant<std::monostate, std::int64_t, double, std::str
 class Value {
 public:
 	virtual bool isArray() const = 0;
+
+	virtual std::shared_ptr<Value> copy() const = 0;
+
+	virtual std::string toString() const = 0;
 };
 
 class SingleValue : public Value {
@@ -31,18 +35,12 @@ public:
 
 	explicit SingleValue(std::string v) : value(std::move(v)) {}
 
+	explicit SingleValue(bool v) : type(v ? TYPE_T : TYPE_NIL), value() {}
+
 	SingleValue() : SingleValue(ValueType::TYPE_NIL) {}
 
 	bool isArray() const override final {
 		return false;
-	}
-
-	static SingleValue makeT() {
-		return SingleValue(ValueType::TYPE_T);
-	}
-
-	static SingleValue makeNil() {
-		return SingleValue(ValueType::TYPE_NIL);
 	}
 
 	ValueType getType() const {
@@ -88,6 +86,26 @@ public:
 	void setValue(ValueVariant v) {
 		this->value = std::move(v);
 	}
+
+	std::shared_ptr<Value> copy() const override final {
+		return std::make_shared<SingleValue>(*this);
+	}
+
+	std::string toString() const override final {
+		if (this->isInt())
+			return std::to_string(this->getInt());
+		if (this->isFloat())
+			return std::to_string(this->getFloat());
+		if (this->isString())
+			return this->getString();
+		if (this->isT())
+			return "T";
+		return "NIL";
+	}
+
+	bool operator==(const SingleValue& rhs) const {
+		return type == rhs.type && value == rhs.value;
+	}
 };
 
 class ArrayValue : public Value {
@@ -115,12 +133,29 @@ public:
 		return this->values[i];
 	}
 
+	void set(std::size_t i, SingleValue v) {
+		this->values[i] = std::move(v);
+	}
+
 	std::vector<SingleValue>& getValues() {
 		return this->values;
 	}
 
 	const std::vector<SingleValue>& getValues() const {
 		return this->values;
+	}
+
+	std::shared_ptr<Value> copy() const override final {
+		return std::make_shared<ArrayValue>(*this);
+	}
+
+	std::string toString() const override final {
+		std::string result = "[";
+		for (const auto& i : this->values)
+			result.append(i.toString()).append(", ");
+		result.pop_back();
+		result.back() = ']';
+		return result;
 	}
 };
 

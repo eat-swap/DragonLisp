@@ -2,6 +2,7 @@
 #define __DRAGON_LISP_CONTEXT_H__
 
 #include <memory>
+#include <utility>
 #include <variant>
 
 #include "value.h"
@@ -30,7 +31,7 @@ public:
 
 	std::shared_ptr<Value> getVariable(const std::string& name) const {
 		if (this->variables.contains(name))
-			return this->variables[name];
+			return this->variables.at(name);
 		if (this->parent)
 			return this->parent->getVariable(name);
 		return nullptr;
@@ -38,6 +39,28 @@ public:
 
 	void setVariable(const std::string& name, std::shared_ptr<Value> value) {
 		this->variables[name] = std::move(value);
+	}
+
+	bool hasVariable(const std::string& name) const {
+		if (this->variables.contains(name))
+			return true;
+		if (this->parent)
+			return this->parent->hasVariable(name);
+		return false;
+	}
+
+	std::shared_ptr<FuncDefAST> getFunc(const std::string& name) const {
+		if (this->funcs->contains(name))
+			return (*this->funcs)[name];
+		return nullptr;
+	}
+
+	void setFunc(const std::string& name, std::shared_ptr<FuncDefAST> value) {
+		(*this->funcs)[name] = std::move(value);
+	}
+
+	Context* getParent() const {
+		return this->parent;
 	}
 };
 

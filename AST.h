@@ -22,6 +22,7 @@ enum ASTType {
 	T_ListAST,
 	T_VarOpAST,
 	T_LValOpAST,
+	T_ReturnAST,
 };
 
 /// BaseAST - Base class for all AST nodes.
@@ -97,7 +98,7 @@ private:
 	std::vector<std::shared_ptr<ExprAST>> args;
 
 public:
-	FuncCallAST(std::string name, std::vector<std::unique_ptr<ExprAST>> args);
+	FuncCallAST(std::string name, std::vector<std::shared_ptr<ExprAST>> args) : name(std::move(name)), args(std::move(args)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -113,7 +114,7 @@ private:
 	std::shared_ptr<ExprAST> els;
 
 public:
-	IfAST(std::unique_ptr<ExprAST> cond, std::unique_ptr<ExprAST> then, std::unique_ptr<ExprAST> els);
+	IfAST(std::shared_ptr<ExprAST> cond, std::shared_ptr<ExprAST> then, std::shared_ptr<ExprAST> els) : cond(std::move(cond)), then(std::move(then)), els(std::move(els)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final {
 		throw std::runtime_error("You should use IfAST::getResult() instead of IfAST::eval()");
@@ -131,10 +132,10 @@ private:
 	std::string loopVar;
 	std::shared_ptr<ExprAST> start;
 	std::shared_ptr<ExprAST> end;
-	std::shared_ptr<FuncDefAST> body;
+	std::vector<std::shared_ptr<ExprAST>> body;
 
 public:
-	LoopAST(std::string loopVar, std::unique_ptr<ExprAST> start, std::unique_ptr<ExprAST> end, std::unique_ptr<FuncDefAST> body);
+	LoopAST(std::string loopVar, std::shared_ptr<ExprAST> start, std::shared_ptr<ExprAST> end, std::vector<std::shared_ptr<ExprAST>> body) : loopVar(std::move(loopVar)), start(std::move(start)), end(std::move(end)), body(std::move(body)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -149,7 +150,7 @@ private:
 	Token op;
 
 public:
-	UnaryAST(std::unique_ptr<ExprAST> expr, Token op);
+	UnaryAST(std::shared_ptr<ExprAST> expr, Token op) : expr(std::move(expr)), op(std::move(op)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -165,7 +166,7 @@ private:
 	Token op;
 
 public:
-	BinaryAST(std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs, Token op);
+	BinaryAST(std::shared_ptr<ExprAST> lhs, std::shared_ptr<ExprAST> rhs, Token op) : lhs(std::move(lhs)), rhs(std::move(rhs)), op(std::move(op)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -180,7 +181,7 @@ private:
 	Token op;
 
 public:
-	ListAST(std::vector<std::unique_ptr<ExprAST>> exprs, Token op);
+	ListAST(std::vector<std::shared_ptr<ExprAST>> exprs, Token op) : exprs(std::move(exprs)), op(std::move(op)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -196,7 +197,7 @@ private:
 	Token op;
 
 public:
-	VarOpAST(std::string name, std::unique_ptr<ExprAST> expr, Token op);
+	VarOpAST(std::string name, std::shared_ptr<ExprAST> expr, Token op) : name(std::move(name)), expr(std::move(expr)), op(std::move(op)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
@@ -212,12 +213,26 @@ private:
 	Token op;
 
 public:
-	LValOpAST(std::unique_ptr<ExprAST> lval, std::unique_ptr<ExprAST> expr, Token op);
+	LValOpAST(std::shared_ptr<ExprAST> lval, std::shared_ptr<ExprAST> expr, Token op) : lval(std::move(lval)), expr(std::move(expr)), op(std::move(op)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
 	inline ASTType getType() const override final {
 		return T_LValOpAST;
+	}
+};
+
+class ReturnAST : public ExprAST {
+private:
+	std::shared_ptr<ExprAST> expr;
+
+public:
+	explicit ReturnAST(std::shared_ptr<ExprAST> expr) : expr(std::move(expr)) {}
+
+	std::shared_ptr<Value> eval(Context* parent) override final;
+
+	inline ASTType getType() const override final {
+		return T_ReturnAST;
 	}
 };
 
