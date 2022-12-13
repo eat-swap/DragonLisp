@@ -44,7 +44,8 @@
 
 (print (+ 1 2 3 4 5)) ; prints 15
 
-(print "Hello, world!") ; prints Hello, world!
+(print "Hello,
+ wo\n\"r\"ld!") ; prints Hello,(newline here) wo\n\"r\"ld!
 
 (defvar lower_bound 1)
 (loop
