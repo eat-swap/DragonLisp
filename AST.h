@@ -23,6 +23,7 @@ enum ASTType {
 	T_VarOpAST,
 	T_LValOpAST,
 	T_ReturnAST,
+	T_LiteralAST,
 };
 
 /// BaseAST - Base class for all AST nodes.
@@ -89,6 +90,10 @@ public:
 
 	inline ASTType getType() const override final {
 		return T_FuncDefAST;
+	}
+
+	inline const std::string& getName() const {
+		return this->name;
 	}
 };
 
@@ -233,6 +238,28 @@ public:
 
 	inline ASTType getType() const override final {
 		return T_ReturnAST;
+	}
+};
+
+class LiteralAST : public ExprAST {
+private:
+	std::shared_ptr<Value> val;
+
+public:
+	explicit LiteralAST(bool val) : val(std::make_shared<SingleValue>(val)) {}
+
+	explicit LiteralAST(std::int64_t val) : val(std::make_shared<SingleValue>(val)) {}
+
+	explicit LiteralAST(double val) : val(std::make_shared<SingleValue>(val)) {}
+
+	explicit LiteralAST(std::string val) : val(std::make_shared<SingleValue>(std::move(val))) {}
+
+	inline ASTType getType() const override final {
+		return T_LiteralAST;
+	}
+
+	std::shared_ptr<Value> eval(Context* parent) override final {
+		return val->copy();
 	}
 };
 

@@ -104,7 +104,33 @@ namespace DragonLisp {
 %type <DragonLisp::Token>	binary-tokens
 %type <DragonLisp::Token>	list-tokens
 
-%type <std::unique_ptr<DragonLisp::ExprAST>> R-Value
+%type <std::shared_ptr<DragonLisp::LValueAST>>	L-Value
+%type <std::shared_ptr<DragonLisp::LValueAST>>	array-ref
+%type <std::shared_ptr<DragonLisp::FuncDefAST>>	func-def
+
+%type <std::shared_ptr<DragonLisp::ExprAST>>	R-Value
+%type <std::shared_ptr<DragonLisp::ExprAST>>	S-Expr
+%type <std::shared_ptr<DragonLisp::ExprAST>>	S-Expr-helper
+
+%type <std::vector<std::shared_ptr<DragonLisp::ExprAST>>>	R-Value-list
+
+%type <std::vector<std::string>>				identifier-list
+%type <std::vector<std::string>>				func-arg-list
+%type <std::vector<std::shared_ptr<DragonLisp::ExprAST>>>	func-body
+%type <std::shared_ptr<DragonLisp::ExprAST>>			func-body-expr
+
+%type <std::shared_ptr<DragonLisp::ReturnAST>>	return-expr
+%type <std::shared_ptr<DragonLisp::BinaryAST>>	S-Expr-binary
+%type <std::shared_ptr<DragonLisp::UnaryAST>>	S-Expr-unary
+%type <std::shared_ptr<DragonLisp::ListAST>>	S-Expr-list
+%type <std::shared_ptr<DragonLisp::IfAST>>	S-Expr-if
+%type <std::shared_ptr<DragonLisp::VarOpAST>>	S-Expr-var-op
+%type <std::shared_ptr<DragonLisp::LValOpAST>>	S-Expr-Lval-op
+%type <std::shared_ptr<DragonLisp::LoopAST>>	S-Expr-loop
+%type <std::shared_ptr<DragonLisp::FuncCallAST>>	S-Expr-func-call
+
+
+%type <std::variant<std::shared_ptr<DragonLisp::ExprAST>, std::shared_ptr<DragonLisp::FuncDefAST>>>			statement
 
 %define parse.error verbose
 
@@ -118,72 +144,72 @@ S
 ;
 
 statements
-	: statement		{ std::printf("Parsed statements -> statement\n"); }
-	| statements statement	{ std::printf("Parsed statements -> statements statement\n"); }
+	: statement		{ std::printf("Parsed statements -> statement\n"); drv.execute($1); }
+	| statements statement	{ std::printf("Parsed statements -> statements statement\n"); drv.execute($2); }
 ;
 
 statement
-	: S-Expr		{ std::printf("Parsed statement -> S-Expr\n"); }
-	| func-def		{ std::printf("Parsed statement -> func-def\n"); }
+	: R-Value		{ std::printf("Parsed statement -> R-Value\n"); $$ = $1; }
+	| func-def		{ std::printf("Parsed statement -> func-def\n"); $$ = $1; }
 ;
 
 array-ref
-	: LPAREN AREF IDENTIFIER R-Value RPAREN	{ std::printf("Parsed array-ref -> ( AREF IDENTIFIER R-Value )\n"); }
+	: LPAREN AREF IDENTIFIER R-Value RPAREN	{ std::printf("Parsed array-ref -> ( AREF IDENTIFIER R-Value )\n"); $$ = drv.constructLValueAST($3, $4); }
 ;
 
 return-expr
-	: LPAREN RETURN R-Value RPAREN	{ std::printf("Parsed return-expr -> ( RETURN R-Value )\n"); }
+	: LPAREN RETURN R-Value RPAREN	{ std::printf("Parsed return-expr -> ( RETURN R-Value )\n"); $$ = drv.constructReturnAST($3); }
 ;
 
 func-body-expr
-	: return-expr		{ std::printf("Parsed func-body -> return-expr\n"); }
-	| R-Value		{ std::printf("Parsed func-body -> R-Value\n"); }
+	: return-expr		{ std::printf("Parsed func-body -> return-expr\n"); $$ = $1; }
+	| R-Value		{ std::printf("Parsed func-body -> R-Value\n"); $$ = $1; }
 ;
 
 func-body
-	: func-body-expr		{ std::printf("Parsed func-body -> func-body-expr\n"); }
-	| func-body func-body-expr	{ std::printf("Parsed func-body -> func-body func-body-expr\n"); }
+	: func-body-expr		{ std::printf("Parsed func-body -> func-body-expr\n"); $$ = { $1 }; }
+	| func-body func-body-expr	{ std::printf("Parsed func-body -> func-body func-body-expr\n"); $1.push_back($2); $$ = $1; }
 ;
 
 L-Value
-	: IDENTIFIER	{ std::printf("Parsed L-Value -> IDENTIFIER\n"); }
-	| array-ref	{ std::printf("Parsed L-Value -> array-ref\n"); }
+	: IDENTIFIER	{ std::printf("Parsed L-Value -> IDENTIFIER\n"); $$ = drv.constructLValueAST($1); }
+	| array-ref	{ std::printf("Parsed L-Value -> array-ref\n"); $$ = $1; }
 ;
 
 R-Value
-	: IDENTIFIER	{ std::printf("Parsed R-Value -> IDENTIFIER\n"); }
-	| S-Expr	{ std::printf("Parsed R-Value -> S-Expr\n"); }
-	| INTEGER	{ std::printf("Parsed R-Value -> INTEGER\n"); }
-	| FLOAT		{ std::printf("Parsed R-Value -> FLOAT\n"); }
-	| STRING	{ std::printf("Parsed R-Value -> STRING\n"); }
-	| array-ref	{ std::printf("Parsed R-Value -> array-ref\n"); }
-	| NIL		{ std::printf("Parsed R-Value -> NIL\n"); }
-	| T		{ std::printf("Parsed R-Value -> T\n"); }
+	: IDENTIFIER	{ std::printf("Parsed R-Value -> IDENTIFIER\n"); $$ = drv.constructLValueAST($1); }
+	| S-Expr	{ std::printf("Parsed R-Value -> S-Expr\n"); $$ = $1; }
+	| INTEGER	{ std::printf("Parsed R-Value -> INTEGER\n"); $$ = drv.constructLiteralAST($1); }
+	| FLOAT		{ std::printf("Parsed R-Value -> FLOAT\n"); $$ = drv.constructLiteralAST($1); }
+	| STRING	{ std::printf("Parsed R-Value -> STRING\n"); $$ = drv.constructLiteralAST($1); }
+	| array-ref	{ std::printf("Parsed R-Value -> array-ref\n"); $$ = $1; }
+	| NIL		{ std::printf("Parsed R-Value -> NIL\n"); $$ = drv.constructLiteralAST(false); }
+	| T		{ std::printf("Parsed R-Value -> T\n"); $$ = drv.constructLiteralAST(true); }
 ;
 
 R-Value-list
-	: R-Value		{ std::printf("Parsed R-Value-list -> R-Value\n"); }
-	| R-Value-list R-Value	{ std::printf("Parsed R-Value-list -> R-Value-list R-Value\n"); }
+	: R-Value		{ std::printf("Parsed R-Value-list -> R-Value\n"); $$ = { $1 }; }
+	| R-Value-list R-Value	{ std::printf("Parsed R-Value-list -> R-Value-list R-Value\n"); $1.push_back($2); $$ = $1; }
 ;
 
 S-Expr
-	: LPAREN S-Expr-helper RPAREN	{ std::printf("Parsed S-Expr -> ( S-Expr-helper )\n"); }
-	| LPAREN RPAREN			{ std::printf("Parsed S-Expr -> ()\n"); }
+	: LPAREN S-Expr-helper RPAREN	{ std::printf("Parsed S-Expr -> ( S-Expr-helper )\n"); $$ = $2; }
+	| LPAREN RPAREN			{ std::printf("Parsed S-Expr -> ()\n"); $$ = drv.constructLiteralAST(false); }
 ;
 
 S-Expr-helper
-	: S-Expr-var-op		{ std::printf("Parsed S-Expr-helper -> S-Expr-var-op\n"); }
-	| S-Expr-Lval-op	{ std::printf("Parsed S-Expr-helper -> S-Expr-Lval-op\n"); }
-	| S-Expr-unary		{ std::printf("Parsed S-Expr-helper -> S-Expr-unary\n"); }
-	| S-Expr-binary		{ std::printf("Parsed S-Expr-helper -> S-Expr-binary\n"); }
-	| S-Expr-list		{ std::printf("Parsed S-Expr-helper -> S-Expr-list\n"); }
-	| S-Expr-if		{ std::printf("Parsed S-Expr-helper -> S-Expr-if\n"); }
-	| S-Expr-loop		{ std::printf("Parsed S-Expr-helper -> S-Expr-loop\n"); }
-	| S-Expr-func-call	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-call\n"); }
+	: S-Expr-var-op		{ std::printf("Parsed S-Expr-helper -> S-Expr-var-op\n"); $$ = $1; }
+	| S-Expr-Lval-op	{ std::printf("Parsed S-Expr-helper -> S-Expr-Lval-op\n"); $$ = $1; }
+	| S-Expr-unary		{ std::printf("Parsed S-Expr-helper -> S-Expr-unary\n"); $$ = $1; }
+	| S-Expr-binary		{ std::printf("Parsed S-Expr-helper -> S-Expr-binary\n"); $$ = $1; }
+	| S-Expr-list		{ std::printf("Parsed S-Expr-helper -> S-Expr-list\n"); $$ = $1; }
+	| S-Expr-if		{ std::printf("Parsed S-Expr-helper -> S-Expr-if\n"); $$ = $1; }
+	| S-Expr-loop		{ std::printf("Parsed S-Expr-helper -> S-Expr-loop\n"); $$ = $1; }
+	| S-Expr-func-call	{ std::printf("Parsed S-Expr-helper -> S-Expr-func-call\n"); $$ = $1; }
 ;
 
 S-Expr-var-op
-	: var-op-tokens IDENTIFIER R-Value	{ std::printf("Parsed S-Expr-var-op -> var-op-tokens IDENTIFIER R-Value\n"); }
+	: var-op-tokens IDENTIFIER R-Value	{ std::printf("Parsed S-Expr-var-op -> var-op-tokens IDENTIFIER R-Value\n"); $$ = drv.constructVarOpAST($2, $3, $1); }
 ;
 
 var-op-tokens
@@ -192,7 +218,7 @@ var-op-tokens
 ;
 
 S-Expr-Lval-op
-	: lval-op-tokens L-Value R-Value	{ std::printf("Parsed S-Expr-Lval-op -> lval-op-tokens L-Value R-Value\n"); }
+	: lval-op-tokens L-Value R-Value	{ std::printf("Parsed S-Expr-Lval-op -> lval-op-tokens L-Value R-Value\n"); $$ = drv.constructLValOpAST($2, $3, $1); }
 ;
 
 lval-op-tokens
@@ -202,7 +228,7 @@ lval-op-tokens
 ;
 
 S-Expr-unary
-	: unary-tokens R-Value	{ std::printf("Parsed S-Expr-unary -> unary-tokens R-Value\n"); }
+	: unary-tokens R-Value	{ std::printf("Parsed S-Expr-unary -> unary-tokens R-Value\n"); $$ = drv.constructUnaryExprAST($2, $1); }
 ;
 
 unary-tokens
@@ -212,7 +238,7 @@ unary-tokens
 ;
 
 S-Expr-binary
-	: binary-tokens R-Value R-Value	{ std::printf("Parsed S-Expr-binary -> binary-tokens R-Value R-Value\n"); }
+	: binary-tokens R-Value R-Value	{ std::printf("Parsed S-Expr-binary -> binary-tokens R-Value R-Value\n"); $$ = drv.constructBinaryExprAST($2, $3, $1); }
 ;
 
 binary-tokens
@@ -226,7 +252,7 @@ binary-tokens
 ;
 
 S-Expr-list
-	: list-tokens R-Value-list	{ std::printf("Parsed S-Expr-list -> list-tokens R-Value-list\n"); }
+	: list-tokens R-Value-list	{ std::printf("Parsed S-Expr-list -> list-tokens R-Value-list\n"); $$ = drv.constructListExprAST($2, $1); }
 ;
 
 list-tokens
@@ -247,32 +273,32 @@ list-tokens
 ;
 
 S-Expr-if
-	: IF R-Value func-body-expr func-body-expr	{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr func-body-expr\n"); }
-	| IF R-Value func-body-expr			{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr\n"); }
+	: IF R-Value func-body-expr func-body-expr	{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr func-body-expr\n"); $$ = drv.constructIfAST($2, $3, $4); }
+	| IF R-Value func-body-expr			{ std::printf("Parsed S-Expr-if -> IF R-Value func-body-expr\n"); $$ = drv.constructIfAST($2, $3, nullptr); }
 ;
 
 S-Expr-loop
-	: LOOP func-body						{ std::printf("Parsed S-Expr-loop -> LOOP func-body\n"); }
-	| LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body\n"); }
-	| DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body		{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body\n"); }
+	: LOOP func-body						{ std::printf("Parsed S-Expr-loop -> LOOP func-body\n"); $$ = drv.constructLoopAST($2); }
+	| LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body	{ std::printf("Parsed S-Expr-loop -> LOOP FOR IDENTIFIER FROM R-Value TO R-Value DO func-body\n"); $$ = drv.constructLoopAST($3, $5, $7, $9); }
+	| DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body		{ std::printf("Parsed S-Expr-loop -> DOTIMES LPAREN IDENTIFIER R-Value RPAREN func-body\n"); $$ = drv.constructLoopAST($3, $4, $6); }
 ;
 
 func-def
-	: LPAREN DEFUN IDENTIFIER func-arg-list func-body RPAREN	{ std::printf("Parsed func-def -> ( DEFUN IDENTIFIER func-arg-list func-body )\n"); }
+	: LPAREN DEFUN IDENTIFIER func-arg-list func-body RPAREN	{ std::printf("Parsed func-def -> ( DEFUN IDENTIFIER func-arg-list func-body )\n"); $$ = drv.constructFuncDefAST($3, $4, $5); }
 ;
 
 func-arg-list
-	: LPAREN RPAREN			{ std::printf("Parsed func-arg-list -> ( )\n"); }
-	| LPAREN identifier-list RPAREN	{ std::printf("Parsed func-arg-list -> ( identifier-list )\n"); }
+	: LPAREN RPAREN			{ std::printf("Parsed func-arg-list -> ( )\n"); $$ = {}; }
+	| LPAREN identifier-list RPAREN	{ std::printf("Parsed func-arg-list -> ( identifier-list )\n"); $$ = $2; }
 
 identifier-list
-	: identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); }
-	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); }
+	: identifier-list IDENTIFIER	{ std::printf("Parsed identifier-list -> identifier-list IDENTIFIER\n"); $1.push_back($2); $$ = $1; }
+	| IDENTIFIER			{ std::printf("Parsed identifier-list -> IDENTIFIER\n"); $$ = { $1 }; }
 ;
 
 S-Expr-func-call
-	: IDENTIFIER R-Value-list	{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER R-Value-list\n"); }
-	| IDENTIFIER			{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER\n"); }
+	: IDENTIFIER R-Value-list	{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER R-Value-list\n"); $$ = drv.constructFuncCallAST($1, $2); }
+	| IDENTIFIER			{ std::printf("Parsed S-Expr-func-call -> IDENTIFIER\n"); $$ = drv.constructFuncCallAST($1, {}); }
 ;
 
 %%
