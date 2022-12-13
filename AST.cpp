@@ -143,6 +143,7 @@ std::shared_ptr<Value> LoopAST::eval(Context* parent) {
 					continue;
 				if (ptr->getType() == T_ReturnAST)
 					return ptr->eval(parent);
+				stmt->eval(parent);
 			}
 		}
 	} else {
@@ -165,6 +166,7 @@ std::shared_ptr<Value> LoopAST::eval(Context* parent) {
 					continue;
 				if (ptr->getType() == T_ReturnAST)
 					return ptr->eval(ctx.get());
+				stmt->eval(ctx.get());
 			}
 		}
 	}
@@ -334,7 +336,7 @@ std::shared_ptr<Value> ListAST::eval(Context* parent) {
 			std::transform(vals2.begin(), vals2.end(), std::back_inserter(intVal), [&](std::shared_ptr<SingleValue>& ptr) {
 				return ptr->getInt();
 			});
-			return std::make_shared<SingleValue>(std::reduce(intVal.begin() + 1, intVal.end(), intVal[0], [this](std::int64_t x, std::int64_t y) {
+			return std::make_shared<SingleValue>(std::accumulate(intVal.begin() + 1, intVal.end(), intVal[0], [this](std::int64_t x, std::int64_t y) {
 				switch (this->op) {
 					case LOGAND:
 						return x & y;
@@ -386,12 +388,12 @@ std::shared_ptr<Value> ListAST::eval(Context* parent) {
 				std::transform(vals2.begin(), vals2.end(), std::back_inserter(floatVal), [&](std::shared_ptr<SingleValue>& ptr) {
 					return (ptr->isFloat() ? ptr->getFloat() : ptr->getInt());
 				});
-				return std::make_shared<SingleValue>(std::reduce(floatVal.begin() + 1, floatVal.end(), floatVal[0], opFunc));
+				return std::make_shared<SingleValue>(std::accumulate(floatVal.begin() + 1, floatVal.end(), floatVal[0], opFunc));
 			} else {
 				std::transform(vals2.begin(), vals2.end(), std::back_inserter(intVal), [&](std::shared_ptr<SingleValue>& ptr) {
 					return ptr->getInt();
 				});
-				return std::make_shared<SingleValue>(std::reduce(intVal.begin() + 1, intVal.end(), intVal[0], opFunc));
+				return std::make_shared<SingleValue>(std::accumulate(intVal.begin() + 1, intVal.end(), intVal[0], opFunc));
 			}
 	}
 
