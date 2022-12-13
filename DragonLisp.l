@@ -15,6 +15,16 @@ using token = DragonLisp::DLParser::token;
 
 #define YY_USER_ACTION loc->columns(yyleng);
 
+#ifdef DLDEBUG
+#define PRINT_FUNC std::printf
+#else // DLDEBUG
+template<typename T, typename... Ts>
+void printNothing(T _ign1, Ts... _ign2) { ; }
+template<typename T>
+void printNothing(T _ign1) { ; }
+#define PRINT_FUNC printNothing
+#endif // DLDEBUG
+
 %}
 
 %option yyclass="DragonLisp::DLScanner"
@@ -72,14 +82,14 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
 {blank}+	{
 	loc->step();
-	// std::printf("Skipping blank\n");
+	// PRINT_FUNC("Skipping blank\n");
 	// return token::TOKEN_SPACE;
 };
 
 \n+		{
 	loc->lines(yyleng);
 	loc->step();
-	// std::printf("Skipping newline\n");
+	// PRINT_FUNC("Skipping newline\n");
 	// return token::TOKEN_SPACE;
 }
 
@@ -92,7 +102,7 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 	if (seq_end_ptr - yytext < yyleng)
 		throw DragonLisp::DLParser::syntax_error(*loc, "Invalid float scanned: [" + std::string(yytext, seq_end_ptr) + "], but provided [" + std::string(yytext) + "]");
 	yylval->emplace<double>(n);
-	std::printf("Scanned float: %lf\n", n);
+	PRINT_FUNC("Scanned float: %lf\n", n);
 	return token::TOKEN_FLOAT;
 }
 
@@ -105,264 +115,264 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 	if (seq_end_ptr - yytext < yyleng)
 		throw DragonLisp::DLParser::syntax_error(*loc, "Invalid integer scanned: [" + std::string(yytext, seq_end_ptr) + "], but provided [" + std::string(yytext) + "]");
 	yylval->emplace<int64_t>(n);
-	std::printf("Scanned integer: %lld\n", n);
+	PRINT_FUNC("Scanned integer: %lld\n", n);
 	return token::TOKEN_INTEGER;
 };
 
 "<="	{
-	std::printf("Scanned <=\n");
+	PRINT_FUNC("Scanned <=\n");
 	return token::TOKEN_LESS_EQUAL;
 };
 
 ">="	{
-	std::printf("Scanned >=\n");
+	PRINT_FUNC("Scanned >=\n");
 	return token::TOKEN_GREATER_EQUAL;
 };
 
 "<"		{
-	std::printf("Scanned <\n");
+	PRINT_FUNC("Scanned <\n");
 	return token::TOKEN_LESS;
 };
 
 ">"		{
-	std::printf("Scanned >\n");
+	PRINT_FUNC("Scanned >\n");
 	return token::TOKEN_GREATER;
 };
 
 "/="	{
-	std::printf("Scanned !=\n");
+	PRINT_FUNC("Scanned !=\n");
 	return token::TOKEN_NOT_EQUAL;
 };
 
 "="		{
-	std::printf("Scanned =\n");
+	PRINT_FUNC("Scanned =\n");
 	return token::TOKEN_EQUAL;
 };
 
 "("		{
-	std::printf("Scanned (\n");
+	PRINT_FUNC("Scanned (\n");
 	return token::TOKEN_LPAREN;
 };
 
 ")"		{
-	std::printf("Scanned )\n");
+	PRINT_FUNC("Scanned )\n");
 	return token::TOKEN_RPAREN;
 };
 
 "+"		{
-	std::printf("Scanned +\n");
+	PRINT_FUNC("Scanned +\n");
 	return token::TOKEN_PLUS;
 };
 
 "-"		{
-	std::printf("Scanned -\n");
+	PRINT_FUNC("Scanned -\n");
 	return token::TOKEN_MINUS;
 };
 
 "*"		{
-	std::printf("Scanned *\n");
+	PRINT_FUNC("Scanned *\n");
 	return token::TOKEN_MULTIPLY;
 };
 
 "/"		{
-	std::printf("Scanned /\n");
+	PRINT_FUNC("Scanned /\n");
 	return token::TOKEN_DIVIDE;
 };
 
 {and}	{
-	std::printf("Scanned and\n");
+	PRINT_FUNC("Scanned and\n");
 	return token::TOKEN_AND;
 };
 
 {or}	{
-	std::printf("Scanned or\n");
+	PRINT_FUNC("Scanned or\n");
 	return token::TOKEN_OR;
 };
 
 {not}	{
-	std::printf("Scanned not\n");
+	PRINT_FUNC("Scanned not\n");
 	return token::TOKEN_NOT;
 };
 
 {max}	{
-	std::printf("Scanned max\n");
+	PRINT_FUNC("Scanned max\n");
 	return token::TOKEN_MAX;
 };
 
 {min}	{
-	std::printf("Scanned min\n");
+	PRINT_FUNC("Scanned min\n");
 	return token::TOKEN_MIN;
 };
 
 {if}	{
-	std::printf("Scanned if\n");
+	PRINT_FUNC("Scanned if\n");
 	return token::TOKEN_IF;
 };
 
 {logand}	{
-	std::printf("Scanned logand\n");
+	PRINT_FUNC("Scanned logand\n");
 	return token::TOKEN_LOGAND;
 };
 
 {logior}	{
-	std::printf("Scanned logior\n");
+	PRINT_FUNC("Scanned logior\n");
 	return token::TOKEN_LOGIOR;
 };
 
 {logxor}	{
-	std::printf("Scanned logxor\n");
+	PRINT_FUNC("Scanned logxor\n");
 	return token::TOKEN_LOGXOR;
 };
 
 {lognor}	{
-	std::printf("Scanned lognor\n");
+	PRINT_FUNC("Scanned lognor\n");
 	return token::TOKEN_LOGNOR;
 };
 
 {logeqv}	{
-	std::printf("Scanned logeqv\n");
+	PRINT_FUNC("Scanned logeqv\n");
 	return token::TOKEN_LOGEQV;
 };
 
 {mod}	{
-	std::printf("Scanned mod\n");
+	PRINT_FUNC("Scanned mod\n");
 	return token::TOKEN_MOD;
 };
 
 {rem}	{
-	std::printf("Scanned rem\n");
+	PRINT_FUNC("Scanned rem\n");
 	return token::TOKEN_REM;
 };
 
 {incf}	{
-	std::printf("Scanned incf\n");
+	PRINT_FUNC("Scanned incf\n");
 	return token::TOKEN_INCF;
 };
 
 {decf}	{
-	std::printf("Scanned decf\n");
+	PRINT_FUNC("Scanned decf\n");
 	return token::TOKEN_DECF;
 };
 
 {defvar}	{
-	std::printf("Scanned defvar\n");
+	PRINT_FUNC("Scanned defvar\n");
 	return token::TOKEN_DEFVAR;
 };
 
 {defun}	{
-	std::printf("Scanned defun\n");
+	PRINT_FUNC("Scanned defun\n");
 	return token::TOKEN_DEFUN;
 };
 
 {print}	{
-	std::printf("Scanned print\n");
+	PRINT_FUNC("Scanned print\n");
 	return token::TOKEN_PRINT;
 };
 
 {loop}	{
-	std::printf("Scanned loop\n");
+	PRINT_FUNC("Scanned loop\n");
 	return token::TOKEN_LOOP;
 };
 
 {setq}	{
-	std::printf("Scanned setq\n");
+	PRINT_FUNC("Scanned setq\n");
 	return token::TOKEN_SETQ;
 };
 
 {setf}	{
-	std::printf("Scanned setf\n");
+	PRINT_FUNC("Scanned setf\n");
 	return token::TOKEN_SETF;
 };
 
 {quote}	{
-	std::printf("Scanned quote\n");
+	PRINT_FUNC("Scanned quote\n");
 	return token::TOKEN_QUOTE;
 };
 
 {for}	{
-	std::printf("Scanned for\n");
+	PRINT_FUNC("Scanned for\n");
 	return token::TOKEN_FOR;
 };
 
 {in}	{
-	std::printf("Scanned in\n");
+	PRINT_FUNC("Scanned in\n");
 	return token::TOKEN_IN;
 };
 
 {from}	{
-	std::printf("Scanned from\n");
+	PRINT_FUNC("Scanned from\n");
 	return token::TOKEN_FROM;
 };
 
 {to}	{
-	std::printf("Scanned to\n");
+	PRINT_FUNC("Scanned to\n");
 	return token::TOKEN_TO;
 };
 
 {dotimes}	{
-	std::printf("Scanned dotimes\n");
+	PRINT_FUNC("Scanned dotimes\n");
 	return token::TOKEN_DOTIMES;
 };
 
 {dolist}	{
-	std::printf("Scanned dolist\n");
+	PRINT_FUNC("Scanned dolist\n");
 	return token::TOKEN_DOLIST;
 };
 
 {do}	{
-	std::printf("Scanned do\n");
+	PRINT_FUNC("Scanned do\n");
 	return token::TOKEN_DO;
 };
 
 {aref}	{
-	std::printf("Scanned aref\n");
+	PRINT_FUNC("Scanned aref\n");
 	return token::TOKEN_AREF;
 };
 
 {t}		{
-	std::printf("Scanned t\n");
+	PRINT_FUNC("Scanned t\n");
 	return token::TOKEN_T;
 };
 
 {nil}	{
-	std::printf("Scanned nil\n");
+	PRINT_FUNC("Scanned nil\n");
 	return token::TOKEN_NIL;
 };
 
 {return}	{
-	std::printf("Scanned return\n");
+	PRINT_FUNC("Scanned return\n");
 	return token::TOKEN_RETURN;
 };
 
 {returnfrom} {
-	std::printf("Scanned returnfrom\n");
+	PRINT_FUNC("Scanned returnfrom\n");
 	return token::TOKEN_RETURN_FROM;
 };
 
 {makearray}	{
-	std::printf("Scanned makearray\n");
+	PRINT_FUNC("Scanned makearray\n");
 	return token::TOKEN_MAKE_ARRAY;
 };
 
 {defconstant}	{
-	std::printf("Scanned defconstant\n");
+	PRINT_FUNC("Scanned defconstant\n");
 	return token::TOKEN_DEFCONSTANT;
 };
 
 {string}	{
 	loc->step();
-	std::printf("Scanned string: %s\n", yytext);
+	PRINT_FUNC("Scanned string: %s\n", yytext);
 	yylval->emplace<std::string>(std::string(yytext + 1, yyleng - 2));
 	return token::TOKEN_STRING;
 }
 
 {comment}	{
-	std::printf("Scanned comment: %s\n", yytext);
+	PRINT_FUNC("Scanned comment: %s\n", yytext);
 	loc->step();
 }
 
 {id}	{
-	std::printf("Scanned identifier: %s\n", yytext);
+	PRINT_FUNC("Scanned identifier: %s\n", yytext);
 	yylval->emplace<std::string>(std::string(yytext, yyleng));
 	return token::TOKEN_IDENTIFIER;
 };

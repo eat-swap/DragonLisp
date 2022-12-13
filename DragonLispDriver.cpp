@@ -34,7 +34,13 @@ int DLDriver::parse(std::istream& in, const std::string& s) {
 	delete this->context;
 	this->context = new Context(nullptr);
 
-	this->parser->set_debug_level(1);
+	this->parser->set_debug_level(
+#ifdef DLDEBUG
+	1
+#else
+	0
+#endif
+	);
 	return this->parser->parse();
 }
 

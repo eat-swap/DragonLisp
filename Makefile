@@ -46,7 +46,7 @@ compile: lexer_compile parser_compile misc_compile
 	$(CXX) $(CXXFLAGS) -o $(OUTPUT) $(OBJS) parser.o lexer.o $(LIBS)
 
 compile_debug: lexer parser
-	$(CXX) $(CXXFLAGS) -o $(OUTPUT) \
+	$(CXX) $(CXXFLAGS) -DDLDEBUG -o $(OUTPUT) \
 		main.cpp \
 		DragonLispDriver.cpp \
 		AST.cpp \
