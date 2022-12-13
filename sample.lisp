@@ -3,7 +3,7 @@
 (setq x (- 3 6 9)) ;; x is -12
 (print x)
 
-(defconstant xconst (= (and 3 6 9) (or 9 6 3))) ;; xconst is T
+(defvar xconst (= (and 3 6 9) (or 9 6 3))) ;; xconst is T
 (print xconst)
 
 (pRiNt

@@ -189,7 +189,6 @@ S-Expr-var-op
 var-op-tokens
 	: DEFVAR	{ std::printf("Parsed var-op-tokens -> DEFVAR\n"); $$ = DragonLisp::Token::DEFVAR; }
 	| SETQ		{ std::printf("Parsed var-op-tokens -> SETQ\n"); $$ = DragonLisp::Token::SETQ; }
-	| DEFCONSTANT	{ std::printf("Parsed var-op-tokens -> DEFCONSTANT\n"); $$ = DragonLisp::Token::DEFCONSTANT; }
 ;
 
 S-Expr-Lval-op
