@@ -77,8 +77,12 @@ std::shared_ptr<Value> FuncDefAST::eval(Context* parent, std::vector<std::shared
 			ptr = dynamic_cast<IfAST*>(ptr)->getResult(ctx.get()).get();
 		if (!ptr)
 			continue;
-		if (ptr->getType() == T_ReturnAST)
-			return ptr->eval(ctx.get());
+		if (ptr->getType() == T_ReturnAST) {
+			auto retAST = dynamic_cast<ReturnAST*>(ptr);
+			if (this->name == retAST->getName())
+				return ptr->eval(ctx.get());
+			throw std::runtime_error("Return name mismatch. Closure is not implemented yet!");
+		}
 		ret = ptr->eval(ctx.get());
 	}
 	return ret;

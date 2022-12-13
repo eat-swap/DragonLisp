@@ -52,7 +52,7 @@
 ) ; prints 1 2 3 4 5 6 7 8 9 10
 
 (defvar i 1)
-(loop (if (> i 5) (return i)) (incf i 3)) ; returns 7
+(print (loop (if (> i 5) (return i)) (incf i 3))) ; returns 7
 
 (dotimes (i 10) (print i)) ; prints 0 1 2 3 4 5 6 7 8 9
 
@@ -62,3 +62,19 @@
 
 (DoTiMeS (i (+ 99999 -99989)) (print i) (setf (aref arr i) (* i i i))) ; prints 0 1 2 3 4 5 6 7 8 9
 (dOtImEs (i 10) (print (aref arr i))) ; prints 0 1 8 27 64 125 216 343 512 729
+
+(defvar dp (make-array 90))
+(loop for i from 0 to 89 do (setf (aref dp i) -1))
+
+(defun fibFast (n)
+    (if (>= n 90) (return-from fibFast "I can't handle this number!"))
+    (if (>= (aref dp n) 0) (return-from fibFast (aref dp n)))
+    (if (<= n 1) (return-from fibFast 1))
+    (setf (aref dp n) (+ (fibFast (- n 1)) (fibFast (- n 2))))
+)
+
+; This is a dynamic programming function,
+; still recursive, but with a memoization table.
+; O(n) time complexity.
+(print (fibFast 8)) ; prints 34
+(print (fibFast 80)) ; prints 37889062373143906

@@ -68,6 +68,7 @@ public:
 
 	// Return AST
 	static std::shared_ptr<ReturnAST> constructReturnAST(std::shared_ptr<ExprAST> value);
+	static std::shared_ptr<ReturnAST> constructReturnAST(std::shared_ptr<ExprAST> value, std::string name);
 
 	// Loop AST
 	static std::shared_ptr<LoopAST> constructLoopAST(std::vector<std::shared_ptr<ExprAST>> body);

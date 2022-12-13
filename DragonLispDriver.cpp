@@ -98,6 +98,10 @@ std::shared_ptr<ReturnAST> DLDriver::constructReturnAST(std::shared_ptr<ExprAST>
 	return std::make_shared<ReturnAST>(std::move(value));
 }
 
+std::shared_ptr <ReturnAST> DLDriver::constructReturnAST(std::shared_ptr <ExprAST> value, std::string name) {
+	return std::make_shared<ReturnAST>(std::move(value), std::move(name));
+}
+
 std::shared_ptr<LoopAST> DLDriver::constructLoopAST(std::vector<std::shared_ptr<ExprAST>> body) {
 	return std::make_shared<LoopForeverAST>(
 		std::move(body)

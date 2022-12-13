@@ -265,11 +265,18 @@ public:
 class ReturnAST : public ExprAST {
 private:
 	std::shared_ptr<ExprAST> expr;
+	std::string name;
 
 public:
-	explicit ReturnAST(std::shared_ptr<ExprAST> expr) : expr(std::move(expr)) {}
+	explicit ReturnAST(std::shared_ptr<ExprAST> expr) : expr(std::move(expr)), name() {}
+
+	ReturnAST(std::shared_ptr<ExprAST> expr, std::string name) : expr(std::move(expr)), name(std::move(name)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
+
+	std::string getName() const {
+		return name;
+	}
 
 	inline ASTType getType() const override final {
 		return T_ReturnAST;
