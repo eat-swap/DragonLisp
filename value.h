@@ -29,11 +29,11 @@ private:
 	explicit SingleValue(ValueType t) : type(t), value() {}
 
 public:
-	explicit SingleValue(std::int64_t v) : value(v) {}
+	explicit SingleValue(std::int64_t v) : value(v), type(TYPE_INTEGER) {}
 
-	explicit SingleValue(double v) : value(v) {}
+	explicit SingleValue(double v) : value(v), type(TYPE_FLOAT) {}
 
-	explicit SingleValue(std::string v) : value(std::move(v)) {}
+	explicit SingleValue(std::string v) : value(std::move(v)), type(TYPE_STRING) {}
 
 	explicit SingleValue(bool v) : type(v ? TYPE_T : TYPE_NIL), value() {}
 
