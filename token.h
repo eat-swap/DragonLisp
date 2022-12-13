@@ -50,6 +50,8 @@ enum Token {
 	DOLIST,
 	DO,
 	AREF,
+	RETURN,
+	RETURN_FROM,
 	MAKE_ARRAY,
 	DEFCONSTANT,
 };

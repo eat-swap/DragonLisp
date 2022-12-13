@@ -88,6 +88,7 @@ namespace DragonLisp {
     T			"t"
     NIL			"nil"
     RETURN		"return"
+    RETURN_FROM		"return-from"
     MAKE_ARRAY		"make-array"
     DEFCONSTANT		"defconstant"
 ;
@@ -159,6 +160,7 @@ array-ref
 
 return-expr
 	: LPAREN RETURN R-Value RPAREN	{ std::printf("Parsed return-expr -> ( RETURN R-Value )\n"); $$ = drv.constructReturnAST($3); }
+	| LPAREN RETURN_FROM IDENTIFIER R-Value RPAREN	{ std::printf("Parsed return-expr -> ( RETURN_FROM IDENTIFIER R-Value )\n"); $$ = drv.constructReturnAST($4, $3); }
 ;
 
 func-body-expr

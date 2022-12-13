@@ -60,6 +60,7 @@ aref	[aA][rR][eE][fF]
 t		[tT]
 nil		[nN][iI][lL]
 return	[rR][eE][tT][uU][rR][nN]
+returnfrom	[rR][eE][tT][uU][rR][nN][-][fF][rR][oO][mM]
 makearray	[mM][aA][kK][eE][-][aA][rR][rR][aA][yY]
 defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
@@ -331,6 +332,11 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 {return}	{
 	std::printf("Scanned return\n");
 	return token::TOKEN_RETURN;
+};
+
+{returnfrom} {
+	std::printf("Scanned returnfrom\n");
+	return token::TOKEN_RETURN_FROM;
 };
 
 {makearray}	{
