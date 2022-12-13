@@ -32,7 +32,11 @@
     )
 )
 
-(fibonacci 15) ; returns 987
+; Time complexity very very very high!!!
+; This is a recursive function.
+; O(2^n) time complexity.
+; Since this interpreter is not well optimized, it will take a long time to run this function.
+(print (fibonacci 8)) ; returns 34
 
 ; This is a comment.
 ; This is another comment.
