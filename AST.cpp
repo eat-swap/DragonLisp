@@ -179,7 +179,7 @@ std::shared_ptr<Value> UnaryAST::eval(Context* parent) {
 	auto valS = std::dynamic_pointer_cast<SingleValue>(val);
 	switch (this->op) {
 		case NOT:
-			return std::make_shared<SingleValue>(val->isArray() || (valS && !valS->isNil()));
+			return std::make_shared<SingleValue>(!val->isArray() && valS && valS->isNil());
 		case MAKE_ARRAY:
 			if (val->isArray() || (valS && !valS->isInt()))
 				throw std::runtime_error("Array size must be an integer");
