@@ -106,6 +106,62 @@ public:
 	bool operator==(const SingleValue& rhs) const {
 		return type == rhs.type && value == rhs.value;
 	}
+
+	bool operator<(const SingleValue& rhs) const {
+		if ((!this->isInt() && !this->isFloat()) || (!rhs.isInt() && !rhs.isFloat()))
+			throw std::runtime_error("Cannot compare non-numeric values");
+		if (this->isInt() && rhs.isInt())
+			return this->getInt() < rhs.getInt();
+		if (this->isInt())
+			return this->getInt() < rhs.getFloat();
+		if (rhs.isInt())
+			return this->getFloat() < rhs.getInt();
+		return this->getFloat() < rhs.getFloat();
+	}
+
+	bool operator<=(const SingleValue& rhs) const {
+		if ((!this->isInt() && !this->isFloat()) || (!rhs.isInt() && !rhs.isFloat()))
+			throw std::runtime_error("Cannot compare non-numeric values");
+		if (this->isInt() && rhs.isInt())
+			return this->getInt() <= rhs.getInt();
+		if (this->isInt())
+			return this->getInt() <= rhs.getFloat();
+		if (rhs.isInt())
+			return this->getFloat() <= rhs.getInt();
+		return this->getFloat() <= rhs.getFloat();
+	}
+
+	SingleValue& operator++() {
+		if (this->isInt())
+			this->value = this->getInt() + 1;
+		else if (this->isFloat())
+			this->value = this->getFloat() + 1;
+		else
+			throw std::runtime_error("Cannot increment non-numeric value");
+		return *this;
+	}
+
+	SingleValue& operator--() {
+		if (this->isInt())
+			this->value = this->getInt() - 1;
+		else if (this->isFloat())
+			this->value = this->getFloat() - 1;
+		else
+			throw std::runtime_error("Cannot decrement non-numeric value");
+		return *this;
+	}
+
+	SingleValue operator++(int) {
+		SingleValue tmp(*this);
+		operator++();
+		return tmp;
+	}
+
+	SingleValue operator--(int) {
+		SingleValue tmp(*this);
+		operator--();
+		return tmp;
+	}
 };
 
 class ArrayValue : public Value {

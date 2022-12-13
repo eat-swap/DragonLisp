@@ -121,60 +121,91 @@ std::shared_ptr<ExprAST> IfAST::getResult(Context* parent) {
 }
 
 
-std::shared_ptr<Value> LoopAST::eval(Context* parent) {
-	// Eval start & end
-	auto s = this->start->eval(parent);
-	auto e = this->end->eval(parent);
-	if (s->isArray() || e->isArray())
-		throw std::runtime_error("Cannot eval loop start or end as integer");
-	auto sc = std::dynamic_pointer_cast<SingleValue>(s);
-	auto ec = std::dynamic_pointer_cast<SingleValue>(e);
-	if (!sc || !ec)
-		throw std::runtime_error("Unexpected error");
-
-	if (sc->isT()) {
-		while (true) {
-			// No need to create a new context
-			for (auto& stmt : this->body) {
-				auto* ptr = stmt.get();
-				if (ptr->getType() == T_IfAST)
-					ptr = dynamic_cast<IfAST*>(ptr)->getResult(parent).get();
-				if (!ptr)
-					continue;
-				if (ptr->getType() == T_ReturnAST)
-					return ptr->eval(parent);
-				stmt->eval(parent);
-			}
+std::shared_ptr<Value> LoopForeverAST::eval(Context* parent) {
+	// No context is needed
+	while (true) {
+		for (auto& stmt : this->body) {
+			auto* ptr = stmt.get();
+			if (ptr->getType() == T_IfAST)
+				ptr = dynamic_cast<IfAST*>(ptr)->getResult(parent).get();
+			if (!ptr)
+				continue;
+			if (ptr->getType() == T_ReturnAST)
+				return ptr->eval(parent);
+			ptr->eval(parent);
 		}
-	} else {
-		if (!sc->isInt() || !ec->isInt())
-			throw std::runtime_error("Cannot eval loop start or end as integer");
+	}
+	throw std::runtime_error("Unexpected error");
+}
 
-		auto ss = sc->getInt();
-		auto ee = ec->getInt();
+std::shared_ptr <Value> LoopForAST::eval(Context* parent) {
+	// Create a new context
+	auto ctx = std::make_shared<Context>(parent);
 
-		// Create a new context
-		auto ctx = std::make_shared<Context>(parent);
+	// Eval condition
+	auto s = std::dynamic_pointer_cast<SingleValue>(this->start->eval(parent)->copy());
+	auto e = std::dynamic_pointer_cast<SingleValue>(this->end->eval(parent));
 
-		for (auto i = ss; i <= ee; ++i) {
-			ctx->setVariable(this->loopVar, std::make_shared<SingleValue>(i));
-			for (auto& stmt : this->body) {
-				auto* ptr = stmt.get();
-				if (ptr->getType() == T_IfAST)
-					ptr = dynamic_cast<IfAST*>(ptr)->getResult(ctx.get()).get();
-				if (!ptr)
-					continue;
-				if (ptr->getType() == T_ReturnAST)
-					return ptr->eval(ctx.get());
-				stmt->eval(ctx.get());
-			}
+	// Assert that s and e are numeric
+	if (!s || !e || (!s->isInt() && !s->isFloat()) || (!e->isInt() && !e->isFloat()))
+		throw std::runtime_error("LoopForAST: start and end must be numeric");
+
+	// Main loop
+	while (*s <= *e) {
+		// Set the variable
+		ctx->setVariable(this->name, s);
+
+		// Eval body
+		for (auto& stmt : this->body) {
+			auto* ptr = stmt.get();
+			if (ptr->getType() == T_IfAST)
+				ptr = dynamic_cast<IfAST*>(ptr)->getResult(ctx.get()).get();
+			if (!ptr)
+				continue;
+			if (ptr->getType() == T_ReturnAST)
+				return ptr->eval(ctx.get());
+			ptr->eval(ctx.get());
+		}
+
+		// Increment
+		s->operator++();
+	}
+
+	// Return nil
+	return std::make_shared<SingleValue>(false);
+}
+
+std::shared_ptr <Value> LoopDoTimesAST::eval(Context* parent) {
+	// Create a new context
+	auto ctx = std::make_shared<Context>(parent);
+
+	// Eval condition
+	auto terminate = std::dynamic_pointer_cast<SingleValue>(this->times->eval(parent)->copy());
+	if (!terminate || !terminate->isInt())
+		throw std::runtime_error("DOTIMES: times must be an integer");
+	auto n = terminate->getInt();
+
+	// Main Loop
+	for (std::int64_t i = 0; i < n; ++i) {
+		// Set Variable
+		ctx->setVariable(this->name, std::make_shared<SingleValue>(i));
+
+		// Eval Body
+		for (auto& stmt : this->body) {
+			auto* ptr = stmt.get();
+			if (ptr->getType() == T_IfAST)
+				ptr = dynamic_cast<IfAST*>(ptr)->getResult(ctx.get()).get();
+			if (!ptr)
+				continue;
+			if (ptr->getType() == T_ReturnAST)
+				return ptr->eval(ctx.get());
+			ptr->eval(ctx.get());
 		}
 	}
 
 	// Return nil
-	return std::make_shared<SingleValue>();
+	return std::make_shared<SingleValue>(false);
 }
-
 
 std::shared_ptr<Value> UnaryAST::eval(Context* parent) {
 	auto val = this->expr->eval(parent);

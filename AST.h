@@ -17,6 +17,9 @@ enum ASTType {
 	T_FuncCallAST,
 	T_IfAST,
 	T_LoopAST,
+	T_LoopForeverAST,
+	T_LoopForAST,
+	T_LoopDoTimesAST,
 	T_UnaryAST,
 	T_BinaryAST,
 	T_ListAST,
@@ -132,20 +135,52 @@ public:
 	}
 };
 
-class LoopAST : public ExprAST {
+class LoopAST : public ExprAST {};
+
+class LoopForeverAST : public LoopAST {
 private:
-	std::string loopVar;
+	std::vector<std::shared_ptr<ExprAST>> body;
+
+public:
+	explicit LoopForeverAST(std::vector<std::shared_ptr<ExprAST>> body) : body(std::move(body)) {}
+
+	std::shared_ptr<Value> eval(Context* parent) override final;
+
+	inline ASTType getType() const override final {
+		return T_LoopForeverAST;
+	}
+};
+
+class LoopForAST : public LoopAST {
+private:
+	std::string name;
 	std::shared_ptr<ExprAST> start;
 	std::shared_ptr<ExprAST> end;
 	std::vector<std::shared_ptr<ExprAST>> body;
 
 public:
-	LoopAST(std::string loopVar, std::shared_ptr<ExprAST> start, std::shared_ptr<ExprAST> end, std::vector<std::shared_ptr<ExprAST>> body) : loopVar(std::move(loopVar)), start(std::move(start)), end(std::move(end)), body(std::move(body)) {}
+	LoopForAST(std::string name, std::shared_ptr<ExprAST> start, std::shared_ptr<ExprAST> end, std::vector<std::shared_ptr<ExprAST>> body) : name(std::move(name)), start(std::move(start)), end(std::move(end)), body(std::move(body)) {}
 
 	std::shared_ptr<Value> eval(Context* parent) override final;
 
 	inline ASTType getType() const override final {
-		return T_LoopAST;
+		return T_LoopForAST;
+	}
+};
+
+class LoopDoTimesAST : public LoopAST {
+private:
+	std::string name;
+	std::shared_ptr<ExprAST> times;
+	std::vector<std::shared_ptr<ExprAST>> body;
+
+public:
+	LoopDoTimesAST(std::string name, std::shared_ptr<ExprAST> times, std::vector<std::shared_ptr<ExprAST>> body) : name(std::move(name)), times(std::move(times)), body(std::move(body)) {}
+
+	std::shared_ptr<Value> eval(Context* parent) override final;
+
+	inline ASTType getType() const override final {
+		return T_LoopDoTimesAST;
 	}
 };
 
