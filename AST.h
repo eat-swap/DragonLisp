@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <variant>
+#include <vector>
 
 #include "types.h"
 #include "token.h"

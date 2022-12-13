@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 #include <variant>
+#include <unordered_map>
 
 #include "value.h"
 

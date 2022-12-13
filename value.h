@@ -4,6 +4,7 @@
 #include <variant>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "types.h"
 
