@@ -18,7 +18,7 @@ CC = gcc
 CXX = g++
 OUTPUT ?= $(PROJ).exe
 
-COMMONFLAGS ?= -g -Wall
+COMMONFLAGS ?= -O2 -Wall -ffast-math -fomit-frame-pointer
 CFLAGS ?= $(COMMONFLAGS) -std=c18
 CXXFLAGS ?= $(COMMONFLAGS) -std=c++20
 

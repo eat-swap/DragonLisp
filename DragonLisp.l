@@ -33,7 +33,7 @@ void printNothing(T _ign1) { ; }
 float	[+-]?[0-9]*[.][0-9]+([eE][+-][0-9]+)?
 int		[+-]?(0[xX][0-9A-Fa-f]*|0[0-7]*|[1-9][0-9]*)
 id		[a-zA-Z_][a-zA-Z_0-9]*
-blank	[ \t\v\r]
+blank	[ \t\v\r]+
 comment	;[^\n\r]*
 string	\"(?:[^\"\\]|\\.)*\"
 
@@ -78,17 +78,16 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
 %{
 	yylval = lval;
+	loc->step();
 %}
 
 {blank}+	{
-	loc->step();
 	// PRINT_FUNC("Skipping blank\n");
 	// return token::TOKEN_SPACE;
 };
 
 \n+		{
 	loc->lines(yyleng);
-	loc->step();
 	// PRINT_FUNC("Skipping newline\n");
 	// return token::TOKEN_SPACE;
 }
@@ -360,7 +359,6 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 };
 
 {string}	{
-	loc->step();
 	PRINT_FUNC("Scanned string: %s\n", yytext);
 	yylval->emplace<std::string>(std::string(yytext + 1, yyleng - 2));
 	return token::TOKEN_STRING;
@@ -368,7 +366,6 @@ defconstant	[dD][eE][fF][cC][oO][nN][sS][tT][aA][nN][tT]
 
 {comment}	{
 	PRINT_FUNC("Scanned comment: %s\n", yytext);
-	loc->step();
 }
 
 {id}	{
