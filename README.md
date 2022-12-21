@@ -10,4 +10,8 @@ idk
 
 See source code.
 
+## License
+
+AGPLv3
+
 Updated: 21/12/2022
